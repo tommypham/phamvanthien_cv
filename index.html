@@ -9,8 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals -->
-    <!-- Application Structure Plan: The SPA is designed as a non-linear interactive portfolio. A sticky navigation bar allows users to jump between thematic sections: an Overview with a career trajectory chart, a deep-dive into Technical Skills with a radar chart, and a filterable Project Portfolio. This structure was chosen to cater to different audiences (recruiters, technical managers) by allowing them to quickly access the information most relevant to them, transforming a static CV into an explorable experience. -->
+    <!-- Chosen Palette: Warm Neutrals: #c7a17a -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -21,237 +20,219 @@
             position: relative;
             width: 100%;
             max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 400px;
-            max-height: 50vh;
-        }
-        @media (max-width: 768px) {
-            .chart-container {
-                height: 300px;
-                max-height: 60vh;
-            }
+            margin-bottom: 3rem;
+            height: 450px; /* Fixed height for consistent chart display */
         }
         .nav-link {
             transition: color 0.3s, border-bottom-color 0.3s;
             border-bottom: 2px solid transparent;
+            font-weight: 500;
         }
         .nav-link:hover, .nav-link.active {
             color: #c7a17a;
             border-bottom-color: #c7a17a;
         }
-        .project-card {
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer; /* Indicate it's clickable */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.7);
         }
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 4, 0, 0.05);
-        }
-        .modal {
-            transition: opacity 0.3s ease-in-out;
-        }
-        .modal.hidden {
-            opacity: 0;
-            pointer-events: none;
+        /* Custom style to make skill bars indicate interactivity */
+        #skillsChart {
+            cursor: help;
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- UPDATED HEADER: Now uses the local image file -->
-    <header id="navbar" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-gray-100">
-        <div class="container mx-auto px-6 py-6">
-            
-            <!-- Profile and Contact Information Block -->
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between">
-                <div class="flex items-center space-x-4 mb-4 md:mb-0">
-                    <!-- Profile Photo: Updated to use the local file 'my_avatar.jpg' -->
-                    <img src="my_avatar.jpg" 
-                         alt="Phạm Văn Thiện Profile Photo" 
-                         class="w-24 h-24 rounded-full object-cover shadow-lg border-2 border-white">
-                    <div>
-                        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800">Phạm Văn Thiện</h1>
-                        <p class="text-lg md:text-xl text-[#c7a17a] font-semibold">Senior Software Engineer</p>
-                    </div>
-                </div>
-
-                <!-- Contact Info moved to Top Right -->
-                <div class="flex flex-col space-y-2 text-base text-right md:text-left text-gray-700">
-                    <div class="flex items-center justify-end md:justify-start space-x-2">
-                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                        <a href="mailto:vanthien1986@gmail.com" class="hover:text-[#c7a17a] transition">vanthien1986@gmail.com</a>
-                    </div>
-                    <div class="flex items-center justify-end md:justify-start space-x-2">
-                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                        <a href="tel:0906411561" class="hover:text-[#c7a17a] transition">0906411561</a>
-                    </div>
+    <!-- Sticky Navigation Header -->
+    <header id="header" class="sticky top-0 z-50 bg-white shadow-md">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-xl font-bold text-gray-800">Phạm Văn Thiện, 17+ Years Experience</h1>
+                <div class="space-x-8 hidden md:flex">
+                    <a href="#overview" class="nav-link active">Overview</a>
+                    <a href="#skills" class="nav-link">Skills</a>
+                    <a href="#portfolio" class="nav-link">Portfolio</a>
+                    <a href="#contact" class="nav-link">Contact</a>
                 </div>
             </div>
-
-            <!-- Sticky Navigation Bar (Below Contact Info) -->
-            <nav class="hidden md:flex justify-center space-x-12 mt-6 border-t border-gray-100 pt-4">
-                <a href="#overview" class="nav-link text-gray-700 font-medium pb-1">Overview</a>
-                <a href="#skills" class="nav-link text-gray-700 font-medium pb-1">Skills</a>
-                <a href="#portfolio" class="nav-link text-gray-700 font-medium pb-1">Portfolio</a>
-            </nav>
-
-            <!-- Mobile Menu Toggle -->
-            <div class="md:hidden flex justify-end">
-                <button id="menu-btn" class="text-gray-700 focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
-            </div>
-             <div id="mobile-menu" class="hidden md:hidden mt-4 border-t border-gray-100 pt-4">
-                <a href="#overview" class="block py-2 text-gray-700 font-medium">Overview</a>
-                <a href="#skills" class="block py-2 text-gray-700 font-medium">Skills</a>
-                <a href="#portfolio" class="block py-2 text-gray-700 font-medium">Portfolio</a>
-            </div>
-        </div>
+        </nav>
     </header>
 
-    <main class="container mx-auto px-6 py-12">
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-        <section id="overview" class="mb-24 scroll-mt-20">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Career Overview</h2>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    This section provides a high-level summary of my 17-year journey as a software engineer. It highlights key achievements and visually represents my career trajectory and tenure at various companies. **Click on any bar** in the chart below to see detailed duties and accomplishments for that role.
-                </p>
-            </div>
+        <!-- OVERVIEW Section -->
+        <section id="overview" class="pt-8 mb-16">
+            <h2 class="text-3xl font-bold mb-6 text-gray-900">Professional Overview</h2>
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div class="md:col-span-2">
+                    <p class="text-lg text-gray-700 mb-6">
+                        A highly experienced and versatile <strong>Senior Software Engineer</strong> with over <strong>17 years</strong> of professional experience, specializing in <strong>iOS Development</strong>, <strong>C/C++ Systems</strong>, and <strong>Cross-Platform Architecture</strong>. Proven history of delivering complex mobile applications, enterprise solutions, and leading development teams.
+                    </p>
+                    <ul class="space-y-3 text-gray-600 list-disc pl-5">
+                        <li><strong>Core Mobile Expertise:</strong> 10+ years focused on iOS development, mastering Objective-C and modern Swift practices.</li>
+                        <li><strong>Systems Integration:</strong> Deep knowledge of low-level programming (C/C++) used for HTS apps, back-up solutions, and EDI programs.</li>
+                        <li><strong>Architectural Leadership:</strong> Proven ability to manage teams and design robust, cross-platform architecture for web services, Windows services, and mobile applications (AP LINK).</li>
+                        <li><strong>Automation Advocate:</strong> Developed and applied iOS UI Automation Test frameworks across multiple organizations (DXC, Cisbox).</li>
+                    </ul>
+                </div>
+                
+                <!-- START OF REVISED PERSONAL & CONTACT BLOCK -->
+                <div class="md:col-span-1 bg-gray-50 p-6 rounded-xl shadow-lg flex flex-col items-center">
+                    <!-- Avatar Image: Using the uploaded file my_avatar.jpg -->
+                    <img src="my_avatar.jpg"
+                         alt="Phạm Văn Thiện Avatar"
+                         class="rounded-full w-24 h-24 mb-4 object-cover border-4 border-white shadow-md"
+                         onerror="this.onerror=null; this.src='https://placehold.co/120x120/c7a17a/ffffff?text=PVT';">
+                    
+                    <h3 class="font-semibold text-xl mb-6 text-gray-900">Education & Contact</h3>
+                    
+                    <!-- EDUCATION BLOCK -->
+                    <div class="w-full mb-6 p-4 bg-white rounded-lg border border-gray-100">
+                        <div class="flex items-center space-x-2 text-gray-800 mb-2">
+                             <!-- Icon for Graduation Cap -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c7a17a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M12 22V15"/><path d="M15 4.1L22 8l-7 4-7-4z"/></svg>
+                            <span class="font-bold text-sm uppercase tracking-wider">Education</span>
+                        </div>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            <strong>Bachelor of Science (B.Sc.)</strong> in <br/>
+                            University of Natural Sciences, VNU-HCM.
+                            <br/><span class="text-xs text-gray-500 font-medium">(Graduation Rank: Very Good)</span>
+                        </p>
+                    </div>
 
-            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 mb-12 border border-gray-100">
-                 <h3 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Key Professional Achievements</h3>
-                <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
-                    <div class="flex items-start space-x-3">
-                        <span class="text-xl mt-1 text-[#c7a17a]">✦</span>
-                        <p class="text-gray-700">**Engineered a custom iOS MVC framework** from scratch, significantly reducing time-to-market for subsequent mobile applications.</p>
-                    </div>
-                    <div class="flex items-start space-x-3">
-                        <span class="text-xl mt-1 text-[#c7a17a]">✦</span>
-                        <p class="text-gray-700">**Developed and deployed robust iOS UI Automation Test Frameworks** across multiple enterprise environments (Cisbox, DXC), drastically improving QA efficiency.</p>
-                    </div>
-                     <div class="flex items-start space-x-3">
-                        <span class="text-xl mt-1 text-[#c7a17a]">✦</span>
-                        <p class="text-gray-700">**Specialized in high-performance computing (C++)** for Windows HTS trading platforms and low-level disk imaging services.</p>
-                    </div>
-                     <div class="flex items-start space-x-3">
-                        <span class="text-xl mt-1 text-[#c7a17a]">✦</span>
-                        <p class="text-gray-700">**Architected and led the development of a cross-platform Enterprise Marketing Solution** (iOS, Android, .NET Web/Services).</p>
+                    <!-- CONTACT BLOCK -->
+                    <div class="w-full space-y-3 text-sm">
+                        
+                        <div class="flex items-center space-x-3">
+                            <!-- Icon for Mail -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c7a17a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                            <a href="mailto:vanthien1986@gmail.com" class="text-gray-700 hover:text-[#c7a17a] hover:underline break-all">vanthien1986@gmail.com</a>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <!-- Icon for Phone -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c7a17a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            <span class="text-gray-700">+84 906 411 561</span>
+                        </div>
+                        
+                        <!-- Optionally add LinkedIn or other professional link -->
+                        <div class="flex items-center space-x-3">
+                             <!-- Icon for User (Placeholder for Contact/Profile Link) -->
+                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c7a17a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span class="text-gray-700">Vietnam, Ho Chi Minh City</span>
+                        </div>
                     </div>
                 </div>
+                <!-- END OF REVISED PERSONAL & CONTACT BLOCK -->
             </div>
-
-            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 border border-gray-100">
-                <h3 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Career Timeline & Role Duration</h3>
-                <div class="chart-container">
-                    <canvas id="experienceChart"></canvas>
-                </div>
+            
+            <h3 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Career Timeline</h3>
+            <!-- Updated instruction for clarity -->
+            <p class="text-sm text-gray-600 mb-4">Click any bar (company) <strong>or the company name label</strong> for details on duties and achievements for that role.</p>
+            <div class="chart-container">
+                <canvas id="experienceChart"></canvas>
             </div>
         </section>
 
-        <section id="skills" class="mb-24 scroll-mt-20">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Technical Skill Deep Dive</h2>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    This section illustrates my core technical competencies. The bar chart provides a visual, highly readable "skill signature" on a 1-10 scale, highlighting my primary areas of expertise, while the tables offer a detailed breakdown of the languages, frameworks, and tools I've mastered throughout my career.
-                </p>
-            </div>
-            <div class="grid lg:grid-cols-5 gap-8">
-                <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6 md:p-8 border border-gray-100 flex items-center justify-center">
-                    <!-- Adjusted container height for a better horizontal bar chart display -->
-                    <div class="chart-container" style="height: 350px; max-height: 40vh;">
+        <hr class="my-10 border-gray-200">
+
+        <!-- SKILLS Section -->
+        <section id="skills" class="pt-8 mb-16">
+            <h2 class="text-3xl font-bold mb-6 text-gray-900">Technical Skills</h2>
+            <div class="grid md:grid-cols-2 gap-10">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Technical Core Competencies</h3>
+                    <p class="text-sm text-gray-600 mb-4">The horizontal bar chart clearly highlights my primary areas of expertise based on the duration and depth of professional use. <strong>Hover over a bar for a detailed description.</strong></p>
+                    <div class="chart-container h-72">
                         <canvas id="skillsChart"></canvas>
                     </div>
                 </div>
-                <div class="lg:col-span-3 bg-white rounded-xl shadow-lg p-6 md:p-8 border border-gray-100">
-                     <h3 class="text-2xl font-semibold text-gray-800 mb-6">Core Technologies</h3>
-                    <div class="space-y-6">
-                        <div>
-                            <h4 class="font-semibold text-lg text-gray-700 mb-2">Languages & Core Skills</h4>
-                            <table class="w-full text-left">
-                                <tbody>
-                                    <tr class="border-b border-gray-200">
-                                        <td class="py-2 pr-4 font-medium text-gray-600">Mobile</td>
-                                        <td class="py-2 text-gray-800">Objective-C, Swift, Cocoa Touch, MapKit, Push Notifications</td>
-                                    </tr>
-                                    <tr class="border-b border-gray-200">
-                                        <td class="py-2 pr-4 font-medium text-gray-600">Backend/Systems</td>
-                                        <td class="py-2 text-gray-800">C/C++, C#, Java, Python, PHP, Ruby, EDI (C++)</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 pr-4 font-medium text-gray-600">Databases</td>
-                                        <td class="py-2 text-gray-800">SQLite, MySQL, Oracle</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                         <div>
-                            <h4 class="font-semibold text-lg text-gray-700 mb-2">Frameworks & Tools</h4>
-                            <table class="w-full text-left">
-                                <tbody>
-                                    <tr class="border-b border-gray-200">
-                                        <td class="py-2 pr-4 font-medium text-gray-600">iOS/Web</td>
-                                        <td class="py-2 text-gray-800">Custom MVC Framework, FastCGI, Django, Rails, YUI</td>
-                                    </tr>
-                                     <tr class="border-b border-gray-200">
-                                        <td class="py-2 pr-4 font-medium text-gray-600">Testing/QA</td>
-                                        <td class="py-2 text-gray-800">Custom iOS UI Automation Test Framework, RSpec, Cucumber</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 pr-4 font-medium text-gray-600">Platforms</td>
-                                        <td class="py-2 text-gray-800">Windows HTS, Microsoft Visual Studio, .NET, TCP/IP</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Tools & Frameworks</h3>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-lg text-[#c7a17a] mb-2">Primary Languages & Platforms</h4>
+                        <table class="w-full text-sm text-left text-gray-500">
+                            <tbody class="divide-y divide-gray-200">
+                                <tr><th class="py-2 font-medium text-gray-900">Mobile</th><td>iOS (Objective-C, Swift), Cocoa Touch, Android (Prior)</td></tr>
+                                <tr><th class="py-2 font-medium text-gray-900">Systems</th><td>C/C++, C# (for .NET/Windows Service)</td></tr>
+                                <tr><th class="py-2 font-medium text-gray-900">Web/Backend</th><td>PHP, Java, Python (Django), Ruby (Rails), .NET Framework</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-lg text-[#c7a17a] mb-2">Database & Storage</h4>
+                        <p class="text-gray-600">SQLite, MySQL, Oracle, Realm, Core Data (built custom data module equivalent).</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-lg text-[#c7a17a] mb-2">Testing & DevOps</h4>
+                        <p class="text-gray-600">iOS UI Automation Test framework, RSpect, Cucumber, Git/Version Control, Testing Methodologies (TMA).</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="portfolio" class="mb-24 scroll-mt-20">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Interactive Project Portfolio</h2>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    Here is a selection of my key projects. Use the filters below to explore the work based on the primary technologies used. **Click on any project card** to see detailed scope and contributions.
-                </p>
-            </div>
-            <div class="flex justify-center space-x-2 md:space-x-4 mb-8" id="portfolio-filters">
-                <button data-filter="all" class="filter-btn bg-[#c7a17a] text-white px-4 py-2 rounded-full font-medium">All</button>
-                <button data-filter="ios" class="filter-btn bg-white text-gray-700 px-4 py-2 rounded-full font-medium border border-gray-200 hover:bg-gray-100">iOS</button>
-                <button data-filter="c++" class="filter-btn bg-white text-gray-700 px-4 py-2 rounded-full font-medium border border-gray-200 hover:bg-gray-100">C/C++</button>
-                <button data-filter="web" class="filter-btn bg-white text-gray-700 px-4 py-2 rounded-full font-medium border border-gray-200 hover:bg-gray-100">Web</button>
-                <button data-filter="automation" class="filter-btn bg-white text-gray-700 px-4 py-2 rounded-full font-medium border border-gray-200 hover:bg-gray-100">Automation</button>
-            </div>
+        <hr class="my-10 border-gray-200">
 
-            <div id="portfolio-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- PORTFOLIO Section -->
+        <section id="portfolio" class="pt-8 mb-16">
+            <h2 class="text-3xl font-bold mb-6 text-gray-900">Selected Project Portfolio</h2>
+            
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-2 mb-6" id="portfolio-filters">
+                <!-- UPDATED COUNT: 9 existing + 5 new = 14 projects total -->
+                <button data-filter="all" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-[#c7a17a] text-white">All (14)</button>
+                <!-- UPDATED COUNT: (6 + OCR) + 5 new iOS-related = 11 iOS projects -->
+                <button data-filter="iOS" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">iOS (11)</button>
+                <!-- UPDATED COUNT: 2 existing + Cocos2d-x = 3 C/C++ projects -->
+                <button data-filter="C/C++" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">C/C++ Systems (3)</button>
+                <!-- UNCHANGED COUNT: 4 Web projects -->
+                <button data-filter="Web" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">Web (4)</button>
+                <!-- UNCHANGED COUNT: 1 Automation project -->
+                <button data-filter="Automation" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">Automation (1)</button>
+            </div>
+            
+            <!-- Portfolio Grid -->
+            <div id="portfolio-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards will be injected here by JavaScript -->
+            </div>
+        </section>
+
+        <hr class="my-10 border-gray-200">
+
+        <!-- CONTACT Section -->
+        <section id="contact" class="pt-8 mb-16 text-center">
+            <h2 class="text-3xl font-bold mb-4 text-gray-900">Ready to Discuss?</h2>
+            <p class="text-lg text-gray-600 mb-6">Contact me directly to explore how my 17 years of experience can contribute to your team's success.</p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <!-- Email Button -->
+                <a href="mailto:vanthien1986@gmail.com" class="inline-block px-8 py-3 text-lg font-semibold text-white bg-[#c7a17a] rounded-lg shadow-lg hover:bg-[#a68261] transition-colors">
+                    Email Phạm Văn Thiện
+                </a>
+                <!-- Phone/Zalo Contact Button -->
+                <a href="tel:+84906411561" class="inline-flex items-center space-x-2 px-6 py-3 text-lg font-semibold text-[#c7a17a] border-2 border-[#c7a17a] bg-white rounded-lg shadow-lg hover:bg-gray-50 transition-colors">
+                    <!-- Phone Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <!-- Chat/Zalo Icon (using a standard speech bubble) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span>Call / Zalo (+84 906 411 561)</span>
+                </a>
             </div>
         </section>
 
     </main>
     
-    <footer class="bg-white mt-16 border-t border-gray-200">
-        <div class="container mx-auto px-6 py-4 text-center text-gray-500">
-            <p>&copy; 2025 Phạm Văn Thiện. All Rights Reserved.</p>
-        </div>
-    </footer>
-
-    <!-- Detail Modal (Reused for Career and Projects) -->
-    <div id="detailModal" class="modal hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-[9999]">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 p-6 md:p-8 relative">
-            <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-900 transition duration-150">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-            <h3 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2 border-gray-200"></h3>
-            <div id="modalContent" class="text-gray-700 space-y-3 max-h-96 overflow-y-auto pr-2">
-                <!-- Content will be injected here (Duration, Description, and Link Button) -->
+    <!-- Modal for Detail View -->
+    <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-overlay">
+        <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto transform transition-all scale-100">
+            <div class="flex justify-between items-start border-b pb-3 mb-4">
+                <h3 id="modal-title" class="text-2xl font-bold text-gray-800"></h3>
+                <button onclick="document.getElementById('detail-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-700 text-3xl leading-none">&times;</button>
             </div>
-            <div id="modalAchievements" class="mt-4 pt-4 border-t border-gray-100">
-                <h4 id="achievementsTitle" class="font-semibold text-lg text-gray-800 mb-2">Key Achievements:</h4>
-                <ul id="modalAchievementList" class="list-disc pl-5 text-gray-600 space-y-1 text-sm">
-                    <!-- Achievements/Contributions will be injected here -->
-                </ul>
+            <div id="modal-content" class="text-gray-600 space-y-4">
+                <!-- Content injected here -->
             </div>
         </div>
     </div>
@@ -259,482 +240,428 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             
-            const menuBtn = document.getElementById('menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const detailModal = document.getElementById('detailModal');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalContent = document.getElementById('modalContent');
-            const modalAchievementList = document.getElementById('modalAchievementList');
-            const achievementsTitle = document.getElementById('achievementsTitle');
+            // --- CHART CONSISTENCY & LABELING ---
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.font.weight = '500';
 
-            menuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-            
-            closeModalBtn.addEventListener('click', () => {
-                detailModal.classList.add('hidden');
-            });
+            // --- DATA STRUCTURES ---
 
-            detailModal.addEventListener('click', (e) => {
-                if (e.target === detailModal) {
-                    detailModal.classList.add('hidden');
+            // Experience data for Career Timeline Chart
+            const detailedExperience = [
+                { id: 0, company: 'Daoukiwoom Innovation', position: 'HTS developer', duration: '7/2023 to 7/2025 (24 months)', achievements: [
+                    'Using Microsoft Visual Studio 2012 to develop C++ to build up Stock and Exchange app for Windows.',
+                    'Fix bug and build new features to release windows app. Link to download HTS app: https://www.kiwoom.co.id/trading/getHTSMain'
+                ]},
+                { id: 1, company: 'Cisbox Ltd.', position: 'iOS developer', duration: '3/2020 to 6/2023 (39 months)', achievements: [
+                    'Develop iOS app for Accounting.',
+                    'Develop framework of iOS UI automation test.',
+                    'Delivery the app successfully. Links: https://apps.apple.com/vn/app/cisbox-invoice/id1354358184, https://apps.apple.com/vn/app/cisbox-order/id1454790295'
+                ]},
+                { id: 2, company: 'DXC Technology', position: 'iOS developer', duration: '10/2017 to 3/2020 (29 months)', achievements: [
+                    'Develop iOS app to track user ‘s step via Apple watch.',
+                    'Develop iOS app to scan QR code.',
+                    'Develop framework of iOS UI automation test.',
+                    'Delivery the app successfully and support customer when new iOS version release.',
+                    'Apply framework of iOS UI automation test to multiple iOS apps.'
+                ]},
+                { id: 3, company: 'Dispatching Solutions, inc (DSi)', position: 'iOS developer', duration: '3/2017 to 9/2017 (6 months)', achievements: [
+                    'Develop iOS app to send, read and write log bluetooth message.',
+                    'Develop an app to keep track truck ‘s activity via bluetooth device: Atrack and Squarell.',
+                    'Upgrade bluetooth firmware over the air.'
+                ]},
+                { id: 4, company: 'EdgeWorks', position: 'iOS developer', duration: '12/2015 to 3/2017 (15 months)', achievements: [
+                    'Develop and delivery successfully app RealEstateTube.',
+                    'Develop and delivery successfully Piano Party game in MindMate app.',
+                    'Develop and delivery successfully app Liive.'
+                ]},
+                { id: 5, company: 'PINE TECH', position: 'iOS developer', duration: '3/2015 to 12/2015 (9 months)', achievements: [
+                    'Develop apps: HTV Online, The Voice, The Voice kids, Buoc Nhay Hoan Vu Nhi, Sabotage.',
+                    'Experience to develop entertainment app.'
+                ]},
+                { id: 6, company: 'AP LINK', position: 'Team leader', duration: '10/2012 to 2/2015 (28 months)', achievements: [
+                    'Manage the team of 5 members.',
+                    'Analyze the requirement. Design architecture for multiple platforms: web portal, web service, windows service, mobile application (Android, iOS).',
+                    'Solo development, built the MVC framework for iOS from scratch (UITextField, UIButton, UITabBar, UINavigationController, MapKit, Barcode scanner, Camera capture, custom Gallery/ScrollView control, SQLite data module).',
+                    'Understand and implement whole architecture of marketing solution.'
+                ]},
+                { id: 7, company: 'Sunrise Software Solution', position: 'Developer', duration: '7/2011 to 10/2012 (15 months)', achievements: [
+                    'Develop C++ project: back-up and restore hard disk on LAN (HTTP and HTTPS).',
+                    'iPhone application: mobile map- search location base on Google map.'
+                ]},
+                { id: 8, company: 'CODIX', position: 'Team leader', duration: '7/2010 to 7/2011 (12 months)', achievements: [
+                    'Manage the team of 3 members.',
+                    'Complete 100% 3 interfaces with C++ and 1 interface with ProC to link software modules in IMX system.',
+                    'Good knowledge of Oracle, C/C++, Java with Spring framework.',
+                    'Worked in Europe for 3 months.'
+                ]},
+                { id: 9, company: 'GATe Technology', position: 'Engineer', duration: '12/2009 to 7/2010 (7 months)', achievements: [
+                    'Develop Web application.',
+                    'Complete successfully 100% 1 web applications with C standard (Web server: lighttpd, Framework: FastCGI).'
+                ]},
+                { id: 10, company: 'B2BE Solution', position: 'Engineer', duration: '10/2008 to 12/2009 (14 months)', achievements: [
+                    'Develop Web application: with PHP, YUI, MySQL, AJAX.',
+                    'Develop EDI with C++.',
+                    'Complete successfully 100% 2 web applications and many EDI programs.'
+                ]},
+                { id: 11, company: 'TMA Solution', position: 'Engineer', duration: '6/2008 to 8/2008 (2 months)', achievements: [
+                    'Testing telecommunication hardware (Nortel).',
+                    'Trained about TCP/IP and Testing method.'
+                ]},
+            ].sort((a, b) => b.id - a.id); // Reverse order for correct chart display (oldest at bottom)
+
+            // Project/Demo Data for Portfolio Section
+            const portfolioData = [
+                // 0-8: Existing Projects
+                { index: 0, title: 'iOS UI Automation Test framework', description: 'Developed a robust framework for UI automation testing, significantly improving QA efficiency.', company: 'Cisbox/DXC', duration: '18 months', tags: ['iOS', 'Automation', 'Framework'], detail: { link: 'https://www.linkedin.com/pulse/demo-ios-ui-automation-test-thien-pham/', highlights: ['Scroll to the cell index of UICollectionView that has been defined in configuration file.'] } },
+                { index: 1, title: 'Liive App', description: 'Video streaming application focused on flawless playback even on low bandwidth/unstable networks.', company: 'EdgeWorks', duration: '6 months', tags: ['iOS', 'Streaming'], detail: { link: 'https://www.linkedin.com/pulse/app-liive-thien-pham?trk=mp-reader-card', highlights: ['Watch video flawlessly in low internet bandwidth or unstable.', 'Fuzzy search help user find the correct place with typo.'] } },
+                { index: 2, title: 'RealEstate Tube', description: 'Mobile video platform for real estate, featuring video joining, live streaming, and chatting.', company: 'EdgeWorks', duration: '6 months', tags: ['iOS', 'Streaming', 'Chat'], detail: { link: 'https://itunes.apple.com/us/app/realestatetube/id966062802?mt=8', highlights: ['Join multiple videos into 1 video with theme music.', 'Live streaming.', 'Chatting.'] } },
+                { index: 3, title: 'OCR Handwriting with MediaPipe',
+                  description: 'A cutting-edge proof-of-concept using MediaPipe to capture and convert <strong>real-time finger gestures (handwriting)</strong> into an image for instant recognition of <strong>text</strong> via Optical Character Recognition (OCR).',
+                  company: 'Personal/Demo', duration: '2 months', tags: ['iOS', 'MediaPipe', 'Demo'], detail: { link: 'https://www.youtube.com/watch?v=Hnng4ymm_6k', highlights: ['Converted finger position into pixels matrix.', 'Converted pixels matrix to image for OCR.'] } },
+                { index: 4, title: 'Enterprise Marketing Platform Architecture', description: 'Design and solo development of a large-scale marketing product spanning web portal, web service, Windows service, Android, and iOS.', company: 'AP LINK', duration: '20 months', tags: ['Architecture', 'C/C++', 'Web', 'iOS'], detail: { link: null, highlights: ['Designed architecture for multiple platforms.', 'Built MVC framework for iOS from scratch.', 'Implemented custom controls: MapKit, Gallery (UIScrollView), Barcode/Camera modules.'] } },
+                { index: 5, title: 'Disk Imaging Service (LAN)', description: 'C++ service to restore and backup hard disk on LAN using HTTP, HTTPS, FPT, and FPTS protocols.', company: 'Sunrise Software Solution', duration: '6 months', tags: ['C/C++', 'Systems', 'Networking'], detail: { link: null, highlights: ['Developed client/server service in C++ to handle backup/restore via HTTP/HTTPS.', 'Focus on reliable system utility development.'] } },
+                { index: 6, title: 'Mobile Map (iPhone)', description: 'Search and navigation app built on Google Maps, prioritizing results based on user votes.', company: 'Sunrise Software Solution', duration: '6 months', tags: ['iOS', 'Objective-C', 'Map'], detail: { link: null, highlights: ['Built GUI and all map functions (navigation, zoom).', 'Implemented a location search and priority voting system.'] } },
+                { index: 7, title: 'Bookmark URL Site', description: 'Freelance project using Ruby on Rails to build a social bookmarking and URL sharing website.', company: 'Freelancer', duration: '3 months', tags: ['Web', 'Ruby', 'Rails'], detail: { link: null, highlights: ['Created database and tested with RSpect/Cucumber.', 'Developed import function from delicious.com and full CRUD for bookmarks/tags.'] } },
+                { index: 8, title: 'Access Card System (Web/C)', description: 'System for card-based door entry, developing the web application side (authentication, user management) using C standard.', company: 'GATe Technology', duration: '7 months', tags: ['Web', 'C'], detail: { link: null, highlights: ['Developed the web application server-side using C standard.', 'Framework: FastCGI, Web server: Lighttpd.'] } },
+                
+                // 9-13: Newly added projects based on the user's list and CV details
+                { index: 9, title: 'Piano Party Game (in MindMate)', description: 'Developed the "Piano Party" game feature integrated within the MindMate application.', company: 'EdgeWorks', duration: '2 months', tags: ['iOS', 'Game'], detail: { link: null, highlights: ['Integrated game feature into existing iOS app.', 'Focus on smooth gameplay and UI/UX.'] } },
+                { index: 10, title: 'HTV Online App', description: 'Development of the official streaming and video-on-demand application for Ho Chi Minh City Television (HTV).', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Streaming'], detail: { link: null, highlights: ['Handled integration of VOD content and live streaming feeds.', 'Optimized for high traffic and entertainment user experience.'] } },
+                { index: 11, title: 'Entertainment TV Show Apps (Buoc Nhay Hoan Vu Nhi)', description: 'Created interactive mobile companion apps for various popular entertainment shows (The Voice, The Voice Kids, Buoc Nhay Hoan Vu Nhi, Sabotage).', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Entertainment'], detail: { link: null, highlights: ['Developed features for voting, news, and video clips related to the shows.'] } },
+                { index: 12, title: 'Netconference VoIP App', description: 'Comprehensive development of a VoIP/Video conferencing mobile application, including custom data management and networking.', company: 'Sunrise Software Solution', duration: '8 months', tags: ['iOS', 'Networking', 'VoIP'], detail: { link: 'http://www.netconference.com/', highlights: ['Completed all core features for a VoIP application.', 'Built a custom data module equivalent to Core Data (SQLite based).'] } },
+                { index: 13, title: 'Cocos2d-x Game Development', description: 'Developed two game applications using the Cocos2d-x framework, utilizing C++ and Lua for cross-platform logic.', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Game', 'C/C++'], detail: { link: null, highlights: ['Built 2 game apps using the Cocos2d-x engine.', 'Programmed game logic using C++ and Lua.'] } },
+            ];
+
+            // Skills data for Radar Chart
+            const skillsData = {
+                // Modified labels for better fit on narrow screens:
+                labels: [
+                    ['iOS', 'Dev'], // Index 0
+                    ['C/C++', 'Systems'], // Index 1
+                    ['Web', 'Dev'], // Index 2
+                    [' Architecture', 'Design'], // Index 3
+                    ['Team', 'Leadership'], // Index 4
+                    ['Test', 'Automation'] // Index 5
+                ],
+                datasets: [{
+                    label: 'Professional Focus (High=10)',
+                    data: [10, 10, 8.5, 9.0, 9.5, 10], // Scores based on depth of professional use
+                    backgroundColor: 'rgba(199, 161, 122, 0.7)', // #c7a17a with alpha
+                    borderColor: '#c7a17a',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#c7a17a'
+                }]
+            };
+
+            // New skill descriptions mapped to their index in the skillsData array
+            const skillDescriptions = [
+                "10+ years focused on Objective-C and Swift. Built custom MVC frameworks, developed complex apps (VoIP, Streaming, Enterprise), and integrated advanced features like MediaPipe and custom Bluetooth handling.", // iOS Dev
+                "Deep low-level knowledge in C/C++, delivering projects like HTS (Stock Trading) apps for Windows, Disk Imaging services (backup/restore), and EDI program interfaces for IMX systems. Experienced with C++ in Windows and Linux environments.", // C/C++ Systems
+                "Experienced in full-stack web development using PHP, Ruby on Rails, Java (Spring), .NET, and C standard (FastCGI) for portals, services, and web applications.", // Web Dev
+                "Led the architecture design for a large-scale cross-platform marketing solution (Web, Windows Service, Mobile). Also built a comprehensive MVC framework for iOS from scratch.", // Architecture Design
+                "Managed teams of 3-5 members, overseeing requirement analysis, architecture design, and project completion, including a 3-month on-site assignment in Europe.", // Team Leadership
+                "Developed and implemented robust iOS UI Automation Test frameworks across multiple organizations (Cisbox, DXC), significantly improving QA efficiency and release cycles." // Test Automation
+            ];
+
+
+            // --- CHART INITIALIZATION ---
+
+            // Career Timeline Chart
+            const experienceCtx = document.getElementById('experienceChart').getContext('2d');
+            const experienceData = {
+                labels: detailedExperience.map(item => {
+                    // MODIFIED: Return only the company name to remove the duration line
+                    return item.company;
+                }),
+                datasets: [{
+                    label: 'Duration in Months',
+                    data: detailedExperience.map(item => {
+                        const durationMatch = item.duration.match(/\((\d+) months\)/);
+                        return durationMatch ? parseInt(durationMatch[1]) : 0;
+                    }),
+                    backgroundColor: '#c7a17a',
+                }]
+            };
+
+            const experienceChart = new Chart(experienceCtx, {
+                type: 'bar',
+                data: experienceData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    // This onHover function makes the cursor a pointer when hovering over a clickable bar
+                    onHover: (event, elements) => {
+                        event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Duration (Months)' }
+                        },
+                        y: {
+                            title: { display: false },
+                            ticks: {
+                                // Increased font size slightly and made the company name bold
+                                font: {
+                                    size: 13,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: (context) => `Duration: ${context.parsed.x} months` } }
+                    },
+                    // This onClick function handles the 'hyperlink' action by opening the detail modal
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const experienceIndex = detailedExperience.length - 1 - index; // Correct for reverse order
+                            showExperienceDetailModal(experienceIndex);
+                        }
+                    }
                 }
             });
 
-            const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
+            // NEW CLICK HANDLER FOR Y-AXIS LABELS (Company Names)
+            document.getElementById('experienceChart').addEventListener('click', function(event) {
+                // Get the coordinates of the click within the chart area
+                const rect = event.target.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+
+                // Check if the click is within the Y-axis area (where labels are)
+                const yAxis = experienceChart.scales.y;
+                const xAxis = experienceChart.scales.x;
+                
+                // Estimate the area of the Y-axis labels: from the start of the canvas to the start of the X-axis (before the bars begin)
+                if (x < xAxis.left && y > yAxis.top && y < yAxis.bottom) {
+                    const ticks = yAxis.getTicks();
+                    
+                    // Determine which label was clicked based on the Y coordinate
+                    for (let i = 0; i < ticks.length; i++) {
+                        // Calculate the center Y position for the current tick label
+                        const tickY = yAxis.getPixelForTick(i);
+                        
+                        // Assuming a label height of about 20-25 pixels
+                        const labelHeight = 22;
+                        
+                        // Check if the click Y is close to the tick's Y center
+                        if (y >= tickY - labelHeight / 2 && y <= tickY + labelHeight / 2) {
+                            // Found the clicked label. Now find the correct index for the detailedExperience array.
+                            // Chart.js plots data in reverse order of the detailedExperience array.
+                            const experienceIndex = detailedExperience.length - 1 - i;
+                            
+                            // Prevent double triggering if the click also registered on a bar
+                            const elements = experienceChart.getElementsAtEventForMode(event, 'point', { intersect: true }, true);
+                            if (elements.length === 0) {
+                                showExperienceDetailModal(experienceIndex);
+                            }
+                            break; // Stop after handling the click
+                        }
+                    }
+                }
+            });
+
+            // Skills Horizontal Bar Chart - UPDATED TOOLTIP
+            const skillsCtx = document.getElementById('skillsChart').getContext('2d');
+            const skillsChart = new Chart(skillsCtx, {
+                type: 'bar',
+                data: skillsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: { stepSize: 2 },
+                            title: { display: true, text: 'Competency Score (out of 10)' }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: {
+                                font: {
+                                    size: 11,
+                                    weight: '500'
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                             // Custom tooltip configuration
+                             callbacks: {
+                                // Use the title callback to display the detailed skill description
+                                title: (tooltipItems) => {
+                                    const index = tooltipItems[0].dataIndex;
+                                    const skillName = skillsData.labels[index].join(' '); // Reconstruct the skill name
+                                    return `${skillName}\n\nSummary:`;
+                                },
+                                // Use the label callback to display the score separately
+                                label: (context) => {
+                                    const score = context.parsed.x;
+                                    return `Score: ${score}/10`;
+                                },
+                                // Use the afterBody callback to inject the long description
+                                afterBody: (tooltipItems) => {
+                                    const index = tooltipItems[0].dataIndex;
+                                    // Split the description into multiple lines for better display in the tooltip
+                                    const description = skillDescriptions[index];
+                                    return description.match(/.{1,40}(\s|$)/g); // Wrap text every ~40 characters
+                                },
+                                // Remove the color box for the summary text
+                                labelColor: (context) => {
+                                    return {
+                                        borderColor: 'transparent',
+                                        backgroundColor: 'transparent'
+                                    };
+                                }
+                             }
+                        }
+                    }
+                }
+            });
+
+
+            // --- MODAL LOGIC ---
+
+            const modal = document.getElementById('detail-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+            
+            // Function to automatically convert URLs in text to clickable links
+            function linkify(text) {
+                // Regex to find http(s):// or ftp:// URLs
+                const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+                return text.replace(urlRegex, function(url) {
+                    return '<a href="' + url + '" target="_blank" class="text-blue-500 hover:underline font-medium break-all">' + url + '</a>';
+                });
+            }
+
+
+            function showExperienceDetailModal(index) {
+                const item = detailedExperience.find(d => d.id === index);
+                if (!item) return;
+
+                modalTitle.textContent = `${item.company} - ${item.position}`;
+                
+                // Use linkify when generating the achievement list items
+                const achievementsHtml = item.achievements.map(a => `<li>${linkify(a)}</li>`).join('');
+
+                modalContent.innerHTML = `
+                    <p class="font-semibold text-lg text-[#c7a17a] mb-2">${item.duration}</p>
+                    <p class="font-bold text-gray-800">Duties & Achievements:</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        ${achievementsHtml}
+                    </ul>
+                `;
+                modal.classList.remove('hidden');
+            }
+
+            function showProjectDetailModal(index) {
+                const item = portfolioData.find(d => d.index === index);
+                if (!item) return;
+
+                modalTitle.textContent = item.title;
+                const linkHtml = item.detail.link
+                    ? `<a href="${item.detail.link}" target="_blank" class="text-blue-500 hover:underline">${item.detail.link}</a>`
+                    : '<span class="text-gray-500">No public link available.</span>';
+
+                modalContent.innerHTML = `
+                    <p class="text-sm text-gray-500 mb-4">${item.company} | ${item.duration}</p>
+                    <p class="mb-4">${item.description}</p>
+                    <p class="font-bold text-gray-800">Highlights:</p>
+                    <ul class="list-disc pl-5 space-y-2 mb-4">
+                        ${item.detail.highlights.map(h => `<li>${h}</li>`).join('')}
+                    </ul>
+                    <p class="font-bold text-gray-800">Link/Demo:</p>
+                    ${linkHtml}
+                `;
+                modal.classList.remove('hidden');
+            }
+
+            // Close modal when clicking outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+
+            // --- NAVIGATION & SCROLL LOGIC ---
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = ['overview', 'skills', 'portfolio', 'contact'].map(id => document.getElementById(id));
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.5 // Trigger when 50% of the section is visible
+            };
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href').substring(1) === entry.target.id) {
-                                link.classList.add('active');
-                            }
-                        });
-                    }
-                });
-            }, { rootMargin: '-50% 0px -50% 0px' });
-
-            document.querySelectorAll('section').forEach(section => {
-                observer.observe(section);
-            });
-            
-            // --- CAREER DATA ---
-            const detailedExperience = [
-                { 
-                    company: 'Daoukiwoom Innovation', 
-                    duration: 'From 7/2023 to current', 
-                    position: 'HTS Developer', 
-                    duties: 'Using Microsoft Visual Studio 2012 to develop C++ to build up Stock and Exchange app for Windows.', 
-                    achievements: [
-                        'Fix bug and build new features to release windows app.',
-                        'Link to download HTS app: https://www.kiwoom.co.id/trading/getHTSMain'
-                    ]
-                },
-                { 
-                    company: 'Cisbox Ltd.', 
-                    duration: 'From 3/2020 to 6/2023 (39 months)', 
-                    position: 'iOS Developer', 
-                    duties: 'Develop iOS app for Accounting. Develop framework of iOS UI automation test.', 
-                    achievements: [
-                        'Delivery the app successfully.',
-                        'Links to download apps: Cisbox Invoice and Cisbox Order. (Note: Public links not provided in original data, these are names of the apps)',
-                        'Successfully developed and deployed internal iOS UI Automation Test Framework.'
-                    ]
-                },
-                { 
-                    company: 'DXC Technology', 
-                    duration: 'From 10/2017 to 3/2020 (30 months)', 
-                    position: 'iOS Developer', 
-                    duties: 'Develop iOS app to track user ‘s step via Apple watch. Develop iOS app to scan QR code. Develop framework of iOS UI automation test.', 
-                    achievements: [
-                        'Delivery the app successfully and support customer when new iOS version release.',
-                        'Apply framework of iOS UI automation test to multiple iOS apps.'
-                    ]
-                },
-                { 
-                    company: 'Dispatching Solutions, inc (DSi)', 
-                    duration: 'From 3/2017 to 9/2017 (6 months)', 
-                    position: 'iOS Developer', 
-                    duties: 'Develop iOS app to send, read and write log bluetooth message.', 
-                    achievements: [
-                        'Develop an app to keep track truck ‘s activity via bluetooth device: Atrack and Squarell.',
-                        'Upgrade bluetooth firmware over the air.'
-                    ]
-                },
-                { 
-                    company: 'EdgeWorks', 
-                    duration: 'From 12/2015 to 3/2017 (15 months)', 
-                    position: 'iOS Developer', 
-                    duties: 'Develop iOS app.', 
-                    achievements: [
-                        'Develop and delivery successfully app RealEstateTube.',
-                        'Develop and delivery successfully Piano Party game in MindMate app.',
-                        'Develop and delivery successfully app Liive (Optimized for low bandwidth).'
-                    ]
-                },
-                { 
-                    company: 'PINE TECH', 
-                    duration: 'From 3/2015 to 12/2015 (9 months)', 
-                    position: 'iOS Developer', 
-                    duties: 'Develop apps: HTV Online, The Voice, The Voice kids, Buoc Nhay Hoan Vu Nhi, Sabotage.', 
-                    achievements: [
-                        'Gained extensive experience developing entertainment apps.'
-                    ]
-                },
-                { 
-                    company: 'AP LINK', 
-                    duration: 'From 10/2012 to 2/2015 (28 months)', 
-                    position: 'Team Leader', 
-                    duties: 'Manage the team of 5 members. Analyze the requirement. Design architecture for multiple platform: web portal, web service, windows service, mobile application (Android, iOS). Research.', 
-                    achievements: [
-                        'Solo developed the MVC framework for iOS from scratch (UITextField, UIButton, UITabBar, UINavigationController, custom Gallery, Core Data replacement via SQLite).',
-                        'Designed and implemented the whole architecture of a cross-platform Enterprise Marketing solution.',
-                        'Gained experience designing architecture in cross-platforms: .NET, Android, iOS.'
-                    ]
-                },
-                 { 
-                    company: 'Sunrise Software Solution', 
-                    duration: 'From 7/2011 to 10/2012 (15 months)', 
-                    position: 'Developer', 
-                    duties: 'Develop C++ project. Develop mobile app.', 
-                    achievements: [
-                        'Completed the C++ project: back-up and restore hard disk on LAN (Protocol: HTTP and HTTPS).',
-                        'Developed an iPhone mobile map application (Google Maps-based).'
-                    ]
-                },
-                { 
-                    company: 'CODIX', 
-                    duration: 'From 7/2010 to 7/2011 (12 months)', 
-                    position: 'Team Leader', 
-                    duties: 'Manage the team of 3 members. Develop Interface to link other software modules in IMX system.', 
-                    achievements: [
-                        'Completed 100% 3 interfaces with C++.',
-                        'Completed 100% 1 interface with ProC.',
-                        'Worked in Europe for 3 months.'
-                    ]
-                },
-                { 
-                    company: 'GATe Technology', 
-                    duration: 'From 12/2009 to 7/2010 (7 months)', 
-                    position: 'Engineer', 
-                    duties: 'Develop Web application.', 
-                    achievements: [
-                        'Completed successfully 100% 1 web applications with C standard (Framework: FastCGI, Web server: Lighttpd).'
-                    ]
-                },
-                { 
-                    company: 'B2BE Solution', 
-                    duration: 'From 10/2008 to 12/2009 (14 months)', 
-                    position: 'Engineer', 
-                    duties: 'Develop Web application: with PHP, YUI, MySQL, AJAX. Develop EDI with C++.', 
-                    achievements: [
-                        'Completed successfully 100% 2 web applications.',
-                        'Accomplished many EDI programs.'
-                    ]
-                },
-                { 
-                    company: 'TMA Solution', 
-                    duration: 'From 6/2008 to 8/2008 (2 months)', 
-                    position: 'Engineer', 
-                    duties: 'Testing telecommunication hardware (Nortel).', 
-                    achievements: [
-                        'Trained in TCP/IP and Testing Methodologies.'
-                    ]
-                }
-            ];
-
-            function showCareerDetailModal(index) {
-                const data = detailedExperience[index];
-                
-                modalTitle.innerHTML = `${data.position} <span class="text-base font-normal text-gray-500">at ${data.company}</span>`;
-                
-                modalContent.innerHTML = `
-                    <p class="font-medium text-gray-600">${data.duration}</p>
-                    <p class="text-sm">**Duties:** ${data.duties}</p>
-                `;
-                
-                // Check for a link in the achievement list and extract it for the button
-                let linkHtml = '';
-                const htsLink = data.achievements.find(a => a.startsWith('Link to download HTS app:'));
-                if (htsLink) {
-                    const url = htsLink.split(': ')[1];
-                    linkHtml = `
-                        <a href="${url}" target="_blank" class="inline-flex items-center justify-center px-4 py-2 mt-4 border border-transparent text-sm font-medium rounded-md shadow-lg text-white bg-[#c7a17a] hover:bg-[#b58f6b] transition duration-150">
-                            View Product Link
-                            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-4-2h5m0 0l-1 1m1-1l-1-1"></path></svg>
-                        </a>
-                    `;
-                }
-
-                modalContent.innerHTML += linkHtml;
-
-                achievementsTitle.textContent = 'Key Achievements:';
-                modalAchievementList.innerHTML = '';
-                data.achievements.forEach(achieve => {
-                    const li = document.createElement('li');
-                    li.textContent = achieve;
-                    modalAchievementList.appendChild(li);
-                });
-
-                detailModal.classList.remove('hidden');
-            }
-            
-            // Re-using the career chart logic and renaming for clarity
-            const experienceData = {
-                labels: detailedExperience.map(item => item.company),
-                datasets: [{
-                    label: 'Months at Company',
-                    data: [28, 39, 30, 6, 15, 9, 28, 15, 12, 7, 14, 2], // Corresponds to the duration in months
-                    backgroundColor: '#e3d5c6',
-                    borderColor: '#c7a17a',
-                    borderWidth: 2,
-                    borderRadius: 4,
-                    borderSkipped: false
-                }]
-            };
-
-            const expCtx = document.getElementById('experienceChart').getContext('2d');
-            const experienceChart = new Chart(expCtx, {
-                type: 'bar',
-                data: experienceData,
-                options: {
-                    indexAxis: 'y',
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    onClick: (e) => {
-                        const points = experienceChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
-                        if (points.length) {
-                            const firstPoint = points[0];
-                            const index = firstPoint.index;
-                            showCareerDetailModal(index); // Use the renamed function
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                title: function(context) {
-                                    return context[0].label;
-                                },
-                                label: function(context) {
-                                    return `Duration: ${context.parsed.x} months (Click for details)`;
-                                }
-                            },
-                            backgroundColor: '#1a1a1a',
-                            titleFont: { size: 14, weight: 'bold' },
-                            bodyFont: { size: 12 },
-                            padding: 10,
-                            displayColors: false,
-                            bodySpacing: 4
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            grid: {
-                                display: true,
-                                color: '#f0f0f0'
-                            },
-                            ticks: {
-                                callback: function(value) {
-                                    return value + 'm';
-                                }
-                            }
-                        },
-                        y: {
-                            grid: {
-                                display: false
-                            }
+                        navLinks.forEach(link => link.classList.remove('active'));
+                        const activeLink = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('active');
                         }
                     }
-                }
-            });
-
-
-            // --- SKILLS DATA (Updated to Horizontal Bar Chart) ---
-            const skillsData = {
-                labels: ['iOS Development', 'C/C++ Systems', 'Testing & Automation', 'Databases', 'Web & Backend'],
-                datasets: [{
-                    label: 'Proficiency Score (1-10)',
-                    // UPDATED SCORES: iOS, C/C++, and Automation are now 10/10
-                    data: [10, 10, 10, 7, 7.5], 
-                    backgroundColor: '#c7a17a', 
-                    borderRadius: 4,
-                }]
-            };
-
-            const skillsCtx = document.getElementById('skillsChart').getContext('2d');
-            new Chart(skillsCtx, {
-                type: 'bar', // Changed from 'radar' to 'bar'
-                data: skillsData,
-                options: {
-                    indexAxis: 'y', // Set to 'y' for horizontal bars
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.label}: ${context.parsed.x}/10`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            max: 10, // Set the max value to 10 for a clear scale
-                            grid: {
-                                display: true,
-                                color: '#e0e0e0'
-                            },
-                            ticks: {
-                                stepSize: 1,
-                                callback: function(value) {
-                                    return value + '/10';
-                                }
-                            }
-                        },
-                        y: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-
-
-            // --- PORTFOLIO DATA (Enhanced with links for modal) ---
-            const portfolioData = [
-                { 
-                    title: 'Liive Video App (Low Bandwidth)', 
-                    description: 'Watch video flawlessly in low bandwidth or unstable networks. Features fuzzy search.', 
-                    tags: ['ios'],
-                    duration: '6 months',
-                    link: 'https://www.linkedin.com/pulse/app-liive-thien-pham?trk=mp-reader-card',
-                    detailedDescription: 'Developed an advanced iOS application focused on video streaming optimization. Key achievement was engineering a proprietary video player stack that minimized buffering and maintained playback quality even on poor network connections, improving user retention.',
-                    keyContributions: ['Engineered low-bandwidth video playback stack.', 'Implemented a complex fuzzy search algorithm for fast and typo-tolerant navigation.', 'Optimized media assets and network calls for minimal data usage.']
-                },
-                { 
-                    title: 'Custom iOS UI Automation Test Framework', 
-                    description: 'A robust, custom framework to automate complex UI testing flows using configuration files.', 
-                    tags: ['ios', 'automation'],
-                    duration: '18 months',
-                    link: 'https://www.linkedin.com/pulse/demo-ios-ui-automation-test-thien-pham/',
-                    detailedDescription: 'Architected and deployed a versatile UI automation framework (Objective-C/Swift) for enterprise applications (Cisbox, DXC). This solution allowed QA teams to define intricate test scenarios (like scrolling to a specific cell in a `UICollectionView`) using external configuration files, greatly reducing manual testing time.',
-                    keyContributions: ['Reduced QA cycle time by 40% through automation.', 'Designed the file parsing logic to handle external configuration (JSON/XML).', 'Integrated the framework across multiple large-scale mobile projects.']
-                },
-                { 
-                    title: 'OCR Handwriting with MediaPipe', 
-                    description: 'Proof-of-concept project converting finger movements into digital image data for Optical Character Recognition.', 
-                    tags: ['ios'],
-                    duration: '2 months',
-                    link: 'https://www.youtube.com/watch?v=Hnng4ymm_6k',
-                    detailedDescription: 'Exploratory R&D project focused on capturing real-time handwriting gestures on an iOS screen. The raw finger coordinates were translated into a pixel matrix, which was then converted into a high-contrast image suitable for various OCR engines.',
-                    keyContributions: ['Converted raw coordinate data into a stable pixel matrix.', 'Successfully generated image output for external OCR processing.', 'Demonstrated feasibility for touch-based data input systems.']
-                },
-                { 
-                    title: 'Windows HTS Trading Platform Features', 
-                    description: 'Developed and maintained high-performance C++ features for a Stock and Exchange desktop trading application.', 
-                    tags: ['c++'],
-                    duration: '28 months (part-time contribution across tenure)',
-                    link: 'https://www.kiwoom.co.id/trading/getHTSMain',
-                    detailedDescription: 'Contributed to the core Windows HTS (Home Trading System) application using C++ and Microsoft Visual Studio 2012. Primary focus was on enhancing real-time data visualization, fixing critical bugs, and building stable new features required for regulatory compliance and user demand.',
-                    keyContributions: ['Delivered several new high-priority features for the HTS release.', 'Responsible for low-latency data handling modules in C++.', 'Fixed stability issues across the trading interface.']
-                },
-                { 
-                    title: 'RealEstate Tube (Social Media)', 
-                    description: 'Video-based real estate social platform featuring joining, streaming, and chatting.', 
-                    tags: ['ios'],
-                    duration: '6 months',
-                    link: 'https://itunes.apple.com/us/app/realestatetube/id960714775',
-                    detailedDescription: 'Developed a feature-rich iOS application for the real estate market. The app included complex media handling features such as joining multiple video clips, adding theme music, and incorporating live streaming functionality with real-time chat.',
-                    keyContributions: ['Implemented robust video joining and editing tools.', 'Integrated live streaming capabilities.', 'Developed the real-time chat module.']
-                },
-                { 
-                    title: 'Disk Imaging Service (C++)', 
-                    description: 'A high-performance C++ service to back-up and restore hard disk data over the local area network (LAN).', 
-                    tags: ['c++'],
-                    duration: '15 months',
-                    link: null, // No public link available for this system-level project
-                    detailedDescription: 'C++ system development project focused on network and low-level disk I/O. The service securely handled disk imaging (backup/restore) and used HTTP/HTTPS protocols for transfer over the LAN, requiring robust error handling and high throughput.',
-                    keyContributions: ['Completed 100% of the C++ back-up and restore functionality.', 'Implemented secure data transfer using HTTP and HTTPS protocols.', 'Optimized network I/O for faster imaging times.']
-                },
-                { 
-                    title: 'Cisbox Accounting Apps', 
-                    description: 'Delivered two complex iOS apps for invoicing and ordering in the financial/accounting domain.', 
-                    tags: ['ios'],
-                    duration: '39 months (across tenure)',
-                    link: null, // No public link available, mentioned app names in description: Cisbox Invoice and Cisbox Order
-                    detailedDescription: 'As the primary iOS developer, I built the Cisbox Invoice and Cisbox Order applications. These apps handled complex business logic, large datasets, and required a secure, stable connection to the backend services. Also developed internal UI automation for these apps.',
-                    keyContributions: ['Successfully delivered both enterprise accounting applications.', 'Ensured app stability and user adoption for financial tasks.', 'Provided continuous support for iOS version updates.']
-                },
-                { 
-                    title: 'Enterprise Marketing Solution Architecture', 
-                    description: 'Architected and led the development of a cross-platform (Web, iOS, Android) enterprise solution.', 
-                    tags: ['web', 'ios', 'c++'],
-                    duration: '28 months',
-                    link: null, // No public link available for the overall architecture
-                    detailedDescription: 'As Team Leader at AP LINK, I designed the entire solution architecture. This included the web portal (.NET 3.5), C# web services, C# Windows services, and the mobile applications (iOS and Android). I also personally developed the custom iOS MVC framework used across all mobile implementations.',
-                    keyContributions: ['Designed the complete cross-platform architecture (Backend/Web/Mobile).', 'Developed the core, reusable MVC framework for the iOS application.', 'Managed a team of 5 developers and handled requirements analysis.']
-                },
-                { 
-                    title: 'Web Application with FastCGI', 
-                    description: 'An access control system web application built in C with the FastCGI framework.', 
-                    tags: ['web', 'c++'],
-                    duration: '7 months',
-                    link: null, // No public link available
-                    detailedDescription: 'Developed a high-performance web application for an access card control system. The choice of C with the FastCGI framework and Lighttpd web server ensured maximum speed and efficiency for handling concurrent user requests and database lookups.',
-                    keyContributions: ['Completed 100% of the application using C and FastCGI.', 'Implemented robust database integration (MySQL/Oracle).', 'Optimized application for performance on resource-constrained servers.']
-                },
-            ];
-
-            function showProjectDetailModal(projectIndex) {
-                const data = portfolioData[projectIndex];
-                
-                modalTitle.innerHTML = data.title;
-                
-                let linkHtml = '';
-                if (data.link) {
-                    linkHtml = `
-                        <a href="${data.link}" target="_blank" class="inline-flex items-center justify-center px-4 py-2 mt-4 border border-transparent text-sm font-medium rounded-md shadow-lg text-white bg-[#c7a17a] hover:bg-[#b58f6b] transition duration-150">
-                            View Project / Demo
-                            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-4-2h5m0 0l-1 1m1-1l-1-1"></path></svg>
-                        </a>
-                    `;
-                } else {
-                    // For projects with no public link, add a note
-                     linkHtml = `
-                        <p class="mt-4 text-sm text-gray-500 italic">No public link available for this system/internal project.</p>
-                    `;
-                }
-                
-                modalContent.innerHTML = `
-                    <p class="font-medium text-gray-600">**Project Duration:** ${data.duration}</p>
-                    <p class="text-sm mt-3">${data.detailedDescription}</p>
-                    ${linkHtml}
-                `;
-                
-                achievementsTitle.textContent = 'Key Contributions & Technologies:';
-                modalAchievementList.innerHTML = '';
-                data.keyContributions.forEach(contribution => {
-                    const li = document.createElement('li');
-                    li.textContent = contribution;
-                    modalAchievementList.appendChild(li);
                 });
+            }, observerOptions);
 
-                detailModal.classList.remove('hidden');
-            }
+            sections.forEach(section => observer.observe(section));
 
+
+            // --- PORTFOLIO FILTERING AND SORTING LOGIC (UPDATED) ---
 
             const portfolioGrid = document.getElementById('portfolio-grid');
-            const filterButtons = document.querySelectorAll('#portfolio-filters .filter-btn');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const SPECIAL_PROJECT_TITLE = 'OCR Handwriting with MediaPipe';
 
             const renderPortfolio = (filter) => {
                 portfolioGrid.innerHTML = '';
-                const filteredData = (filter === 'all')
+                
+                let filteredData = filter === 'all'
                     ? portfolioData
                     : portfolioData.filter(item => item.tags.includes(filter));
 
+                // Custom Sorting Logic: Move the special project to the front
+                const specialProjectIndex = filteredData.findIndex(item => item.title === SPECIAL_PROJECT_TITLE);
+                
+                if (specialProjectIndex > -1) {
+                    const specialProject = filteredData.splice(specialProjectIndex, 1)[0];
+                    filteredData.unshift(specialProject); // Place it at the start
+                }
+
+
                 filteredData.forEach((item, index) => {
                     const card = document.createElement('div');
-                    // Add an index data attribute to easily look up the full details
-                    card.dataset.index = portfolioData.indexOf(item);
-                    card.className = 'project-card bg-white rounded-xl shadow-md p-6 border border-gray-100 overflow-hidden';
                     
-                    let tagsHTML = '';
-                    item.tags.forEach(tag => {
-                        tagsHTML += `<span class="inline-block bg-gray-100 text-[#c7a17a] text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">${tag.toUpperCase()}</span>`;
-                    });
+                    // Logic to highlight the specific project card
+                    let cardClasses = 'flex flex-col rounded-lg shadow-sm p-6 cursor-pointer hover:shadow-lg transition-shadow duration-300';
+
+                    if (item.title === SPECIAL_PROJECT_TITLE) {
+                        // Highlighted style: light amber background, border-2 border-[#c7a17a], subtle scaling transform
+                        cardClasses += ' bg-amber-100 border-2 border-[#c7a17a] shadow-md transform scale-[1.02]';
+                    } else {
+                        // Default style
+                        cardClasses += ' bg-white border border-gray-200';
+                    }
+                    
+                    card.className = cardClasses;
+                    
+                    card.dataset.index = item.index; // Use original index for modal lookup
+                    
+                    // Create Tags HTML
+                    const tagsHTML = item.tags.map(tag =>
+                        `<span class="inline-block bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full font-medium mt-1 mr-1">${tag}</span>`
+                    ).join('');
 
                     card.innerHTML = `
                         <h4 class="font-bold text-lg text-gray-800 mb-2">${item.title}</h4>
@@ -746,8 +673,8 @@
                     
                     // Add click listener to show modal
                     card.addEventListener('click', function() {
-                        const projectIndex = this.dataset.index;
-                        showProjectDetailModal(parseInt(projectIndex));
+                        const projectIndex = parseInt(this.dataset.index);
+                        showProjectDetailModal(projectIndex);
                     });
                     
                     portfolioGrid.appendChild(card);
@@ -759,10 +686,10 @@
                     const filter = button.dataset.filter;
                     filterButtons.forEach(btn => {
                         btn.classList.remove('bg-[#c7a17a]', 'text-white');
-                        btn.classList.add('bg-white', 'text-gray-700');
+                        btn.classList.add('bg-white', 'text-gray-700', 'border', 'border-gray-300', 'hover:border-[#c7a17a]');
                     });
                     button.classList.add('bg-[#c7a17a]', 'text-white');
-                    button.classList.remove('bg-white', 'text-gray-700');
+                    button.classList.remove('bg-white', 'text-gray-700', 'border', 'border-gray-300', 'hover:border-[#c7a17a]');
                     renderPortfolio(filter);
                 });
             });
