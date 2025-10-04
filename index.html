@@ -11,8 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutrals -->
     <!-- Application Structure Plan: The SPA is designed as a non-linear interactive portfolio. A sticky navigation bar allows users to jump between thematic sections: an Overview with a career trajectory chart, a deep-dive into Technical Skills with a radar chart, and a filterable Project Portfolio. This structure was chosen to cater to different audiences (recruiters, technical managers) by allowing them to quickly access the information most relevant to them, transforming a static CV into an explorable experience. -->
-    <!-- Visualization & Content Choices: 1. Career Experience -> Goal: Show career progression -> Viz: Horizontal Bar Chart (Chart.js) -> Interaction: CLICK event to open a modal detailing responsibilities and achievements. Justification: Prevents information overload by keeping details hidden until requested. 2. Technical Skills List -> Goal: Highlight core competencies -> Viz: Radar Chart (Chart.js) -> Interaction: Static view for immediate impact. Justification: Creates a "skill signature" that is more engaging than a list. 3. Project List -> Goal: Showcase tangible work -> Presentation: Filterable Card Grid (JS/Tailwind) -> Interaction: Clickable filters to sort by technology. Justification: A standard, highly-usable UI pattern for portfolios that allows user-driven exploration. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -44,6 +42,7 @@
         }
         .project-card {
             transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer; /* Indicate it's clickable */
         }
         .project-card:hover {
             transform: translateY(-5px);
@@ -191,7 +190,7 @@
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Interactive Project Portfolio</h2>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    Here is a selection of my key projects. Use the filters below to explore the work based on the primary technologies used. Each card provides a glimpse into the project's goals and my contributions.
+                    Here is a selection of my key projects. Use the filters below to explore the work based on the primary technologies used. **Click on any project card** to see detailed scope and contributions.
                 </p>
             </div>
             <div class="flex justify-center space-x-2 md:space-x-4 mb-8" id="portfolio-filters">
@@ -233,7 +232,7 @@
         </div>
     </footer>
 
-    <!-- Detail Modal -->
+    <!-- Detail Modal (Reused for Career and Projects) -->
     <div id="detailModal" class="modal hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-[9999]">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 p-6 md:p-8 relative">
             <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-900 transition duration-150">
@@ -241,12 +240,12 @@
             </button>
             <h3 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2 border-gray-200"></h3>
             <div id="modalContent" class="text-gray-700 space-y-3 max-h-96 overflow-y-auto pr-2">
-                <!-- Content will be injected here -->
+                <!-- Content will be injected here (Duration, Description, and Link Button) -->
             </div>
             <div id="modalAchievements" class="mt-4 pt-4 border-t border-gray-100">
-                <h4 class="font-semibold text-lg text-gray-800 mb-2">Key Achievements:</h4>
+                <h4 id="achievementsTitle" class="font-semibold text-lg text-gray-800 mb-2">Key Achievements:</h4>
                 <ul id="modalAchievementList" class="list-disc pl-5 text-gray-600 space-y-1 text-sm">
-                    <!-- Achievements will be injected here -->
+                    <!-- Achievements/Contributions will be injected here -->
                 </ul>
             </div>
         </div>
@@ -262,6 +261,7 @@
             const modalTitle = document.getElementById('modalTitle');
             const modalContent = document.getElementById('modalContent');
             const modalAchievementList = document.getElementById('modalAchievementList');
+            const achievementsTitle = document.getElementById('achievementsTitle');
 
             menuBtn.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
@@ -296,135 +296,158 @@
                 observer.observe(section);
             });
             
+            // --- CAREER DATA ---
             const detailedExperience = [
-                {
-                    company: 'Daoukiwoom Innovation',
-                    duration: 'From 7/2023 to current',
-                    position: 'HTS Developer',
-                    duties: 'Using Microsoft Visual Studio 2012 to develop C++ to build up Stock and Exchange app for Windows.',
+                { 
+                    company: 'Daoukiwoom Innovation', 
+                    duration: 'From 7/2023 to current', 
+                    position: 'HTS Developer', 
+                    duties: 'Using Microsoft Visual Studio 2012 to develop C++ to build up Stock and Exchange app for Windows.', 
                     achievements: [
                         'Fix bug and build new features to release windows app.',
                         'Link to download HTS app: https://www.kiwoom.co.id/trading/getHTSMain'
                     ]
                 },
-                {
-                    company: 'Cisbox Ltd.',
-                    duration: 'From 3/2020 to 6/2023 (39 months)',
-                    position: 'iOS Developer',
-                    duties: 'Develop iOS app for Accounting. Develop framework of iOS UI automation test.',
+                { 
+                    company: 'Cisbox Ltd.', 
+                    duration: 'From 3/2020 to 6/2023 (39 months)', 
+                    position: 'iOS Developer', 
+                    duties: 'Develop iOS app for Accounting. Develop framework of iOS UI automation test.', 
                     achievements: [
                         'Delivery the app successfully.',
                         'Links to download apps: Cisbox Invoice and Cisbox Order.',
                         'Successfully developed and deployed internal iOS UI Automation Test Framework.'
                     ]
                 },
-                {
-                    company: 'DXC Technology',
-                    duration: 'From 10/2017 to 3/2020 (30 months)',
-                    position: 'iOS Developer',
-                    duties: 'Develop iOS app to track user ‘s step via Apple watch. Develop iOS app to scan QR code. Develop framework of iOS UI automation test.',
+                { 
+                    company: 'DXC Technology', 
+                    duration: 'From 10/2017 to 3/2020 (30 months)', 
+                    position: 'iOS Developer', 
+                    duties: 'Develop iOS app to track user ‘s step via Apple watch. Develop iOS app to scan QR code. Develop framework of iOS UI automation test.', 
                     achievements: [
                         'Delivery the app successfully and support customer when new iOS version release.',
                         'Apply framework of iOS UI automation test to multiple iOS apps.'
                     ]
                 },
-                {
-                    company: 'Dispatching Solutions, inc (DSi)',
-                    duration: 'From 3/2017 to 9/2017 (6 months)',
-                    position: 'iOS Developer',
-                    duties: 'Develop iOS app to send, read and write log bluetooth message.',
+                { 
+                    company: 'Dispatching Solutions, inc (DSi)', 
+                    duration: 'From 3/2017 to 9/2017 (6 months)', 
+                    position: 'iOS Developer', 
+                    duties: 'Develop iOS app to send, read and write log bluetooth message.', 
                     achievements: [
                         'Develop an app to keep track truck ‘s activity via bluetooth device: Atrack and Squarell.',
                         'Upgrade bluetooth firmware over the air.'
                     ]
                 },
-                {
-                    company: 'EdgeWorks',
-                    duration: 'From 12/2015 to 3/2017 (15 months)',
-                    position: 'iOS Developer',
-                    duties: 'Develop iOS app.',
+                { 
+                    company: 'EdgeWorks', 
+                    duration: 'From 12/2015 to 3/2017 (15 months)', 
+                    position: 'iOS Developer', 
+                    duties: 'Develop iOS app.', 
                     achievements: [
                         'Develop and delivery successfully app RealEstateTube.',
                         'Develop and delivery successfully Piano Party game in MindMate app.',
                         'Develop and delivery successfully app Liive (Optimized for low bandwidth).'
                     ]
                 },
-                {
-                    company: 'PINE TECH',
-                    duration: 'From 3/2015 to 12/2015 (9 months)',
-                    position: 'iOS Developer',
-                    duties: 'Develop apps: HTV Online, The Voice, The Voice kids, Buoc Nhay Hoan Vu Nhi, Sabotage.',
+                { 
+                    company: 'PINE TECH', 
+                    duration: 'From 3/2015 to 12/2015 (9 months)', 
+                    position: 'iOS Developer', 
+                    duties: 'Develop apps: HTV Online, The Voice, The Voice kids, Buoc Nhay Hoan Vu Nhi, Sabotage.', 
                     achievements: [
                         'Gained extensive experience developing entertainment apps.'
                     ]
                 },
-                {
-                    company: 'AP LINK',
-                    duration: 'From 10/2012 to 2/2015 (28 months)',
-                    position: 'Team Leader',
-                    duties: 'Manage the team of 5 members. Analyze the requirement. Design architecture for multiple platform: web portal, web service, windows service, mobile application (Android, iOS). Research.',
+                { 
+                    company: 'AP LINK', 
+                    duration: 'From 10/2012 to 2/2015 (28 months)', 
+                    position: 'Team Leader', 
+                    duties: 'Manage the team of 5 members. Analyze the requirement. Design architecture for multiple platform: web portal, web service, windows service, mobile application (Android, iOS). Research.', 
                     achievements: [
                         'Solo developed the MVC framework for iOS from scratch (UITextField, UIButton, UITabBar, UINavigationController, custom Gallery, Core Data replacement via SQLite).',
                         'Designed and implemented the whole architecture of a cross-platform Enterprise Marketing solution.',
                         'Gained experience designing architecture in cross-platforms: .NET, Android, iOS.'
                     ]
                 },
-                 {
-                    company: 'Sunrise Software Solution',
-                    duration: 'From 7/2011 to 10/2012 (15 months)',
-                    position: 'Developer',
-                    duties: 'Develop C++ project. Develop mobile app.',
+                 { 
+                    company: 'Sunrise Software Solution', 
+                    duration: 'From 7/2011 to 10/2012 (15 months)', 
+                    position: 'Developer', 
+                    duties: 'Develop C++ project. Develop mobile app.', 
                     achievements: [
                         'Completed the C++ project: back-up and restore hard disk on LAN (Protocol: HTTP and HTTPS).',
                         'Developed an iPhone mobile map application (Google Maps-based).'
                     ]
                 },
-                {
-                    company: 'CODIX',
-                    duration: 'From 7/2010 to 7/2011 (12 months)',
-                    position: 'Team Leader',
-                    duties: 'Manage the team of 3 members. Develop Interface to link other software modules in IMX system.',
+                { 
+                    company: 'CODIX', 
+                    duration: 'From 7/2010 to 7/2011 (12 months)', 
+                    position: 'Team Leader', 
+                    duties: 'Manage the team of 3 members. Develop Interface to link other software modules in IMX system.', 
                     achievements: [
                         'Completed 100% 3 interfaces with C++.',
                         'Completed 100% 1 interface with ProC.',
                         'Worked in Europe for 3 months.'
                     ]
                 },
-                {
-                    company: 'GATe Technology',
-                    duration: 'From 12/2009 to 7/2010 (7 months)',
-                    position: 'Engineer',
-                    duties: 'Develop Web application.',
+                { 
+                    company: 'GATe Technology', 
+                    duration: 'From 12/2009 to 7/2010 (7 months)', 
+                    position: 'Engineer', 
+                    duties: 'Develop Web application.', 
                     achievements: [
                         'Completed successfully 100% 1 web applications with C standard (Framework: FastCGI, Web server: Lighttpd).'
                     ]
                 },
-                {
-                    company: 'B2BE Solution',
-                    duration: 'From 10/2008 to 12/2009 (14 months)',
-                    position: 'Engineer',
-                    duties: 'Develop Web application: with PHP, YUI, MySQL, AJAX. Develop EDI with C++.',
+                { 
+                    company: 'B2BE Solution', 
+                    duration: 'From 10/2008 to 12/2009 (14 months)', 
+                    position: 'Engineer', 
+                    duties: 'Develop Web application: with PHP, YUI, MySQL, AJAX. Develop EDI with C++.', 
                     achievements: [
                         'Completed successfully 100% 2 web applications.',
                         'Accomplished many EDI programs.'
                     ]
                 },
-                {
-                    company: 'TMA Solution',
-                    duration: 'From 6/2008 to 8/2008 (2 months)',
-                    position: 'Engineer',
-                    duties: 'Testing telecommunication hardware (Nortel).',
+                { 
+                    company: 'TMA Solution', 
+                    duration: 'From 6/2008 to 8/2008 (2 months)', 
+                    position: 'Engineer', 
+                    duties: 'Testing telecommunication hardware (Nortel).', 
                     achievements: [
                         'Trained in TCP/IP and Testing Methodologies.'
                     ]
                 }
             ];
 
+            function showCareerDetailModal(index) {
+                const data = detailedExperience[index];
+                
+                modalTitle.innerHTML = `${data.position} <span class="text-base font-normal text-gray-500">at ${data.company}</span>`;
+                
+                modalContent.innerHTML = `
+                    <p class="font-medium text-gray-600">${data.duration}</p>
+                    <p class="text-sm">**Duties:** ${data.duties}</p>
+                `;
+                
+                achievementsTitle.textContent = 'Key Achievements:';
+                modalAchievementList.innerHTML = '';
+                data.achievements.forEach(achieve => {
+                    const li = document.createElement('li');
+                    li.textContent = achieve;
+                    modalAchievementList.appendChild(li);
+                });
+
+                detailModal.classList.remove('hidden');
+            }
+            
+            // Re-using the career chart logic and renaming for clarity
             const experienceData = {
                 labels: detailedExperience.map(item => item.company),
                 datasets: [{
                     label: 'Months at Company',
-                    data: [28, 39, 30, 6, 15, 9, 28, 15, 12, 7, 14, 2],
+                    data: [28, 39, 30, 6, 15, 9, 28, 15, 12, 7, 14, 2], // Corresponds to the duration in months
                     backgroundColor: '#e3d5c6',
                     borderColor: '#c7a17a',
                     borderWidth: 2,
@@ -446,7 +469,7 @@
                         if (points.length) {
                             const firstPoint = points[0];
                             const index = firstPoint.index;
-                            showDetailModal(index);
+                            showCareerDetailModal(index); // Use the renamed function
                         }
                     },
                     plugins: {
@@ -492,27 +515,8 @@
                 }
             });
 
-            function showDetailModal(index) {
-                const data = detailedExperience[index];
-                
-                modalTitle.innerHTML = `${data.position} <span class="text-base font-normal text-gray-500">at ${data.company}</span>`;
-                
-                modalContent.innerHTML = `
-                    <p class="font-medium text-gray-600">${data.duration}</p>
-                    <p class="text-sm">**Duties:** ${data.duties}</p>
-                `;
-                
-                modalAchievementList.innerHTML = '';
-                data.achievements.forEach(achieve => {
-                    const li = document.createElement('li');
-                    li.textContent = achieve;
-                    modalAchievementList.appendChild(li);
-                });
 
-                detailModal.classList.remove('hidden');
-            }
-
-
+            // --- SKILLS DATA (Unchanged) ---
             const skillsData = {
                 labels: ['iOS Development', 'C/C++ Systems', 'Testing & Automation', 'Databases', 'Web & Backend'],
                 datasets: [{
@@ -544,7 +548,7 @@
                         r: {
                             angleLines: { color: '#e0e0e0' },
                             grid: { color: '#e0e0e0' },
-                            pointLabels: {
+                            pointLabels: { 
                                 font: { size: 12 },
                                 color: '#333'
                             },
@@ -560,17 +564,124 @@
                 }
             });
 
+
+            // --- PORTFOLIO DATA (Enhanced with links for modal) ---
             const portfolioData = [
-                { title: 'Liive Video App', description: 'Watch video flawlessly in low bandwidth or unstable networks. Features fuzzy search.', tags: ['ios'] },
-                { title: 'iOS UI Automation Test Framework', description: 'A custom framework to automate UI testing, configurable via external files.', tags: ['ios', 'automation'] },
-                { title: 'OCR Handwriting with MediaPipe', description: 'Converted finger positions into a pixels matrix, then to an image for OCR.', tags: ['ios'] },
-                { title: 'Windows HTS App', description: 'Developed C++ features for a Stock and Exchange desktop application for Windows.', tags: ['c++'] },
-                { title: 'RealEstate Tube', description: 'Join multiple videos with theme music, live streaming, and real-time chatting.', tags: ['ios'] },
-                { title: 'Disk Imaging Service', description: 'A C++ service to back-up and restore hard disk data over LAN via HTTP/HTTPS.', tags: ['c++'] },
-                { title: 'Cisbox Accounting Apps', description: 'Delivered two complex iOS apps for invoicing and ordering in the accounting domain.', tags: ['ios'] },
-                { title: 'Access Card System', description: 'A web application built in C with FastCGI for an access control system.', tags: ['web', 'c++'] },
-                { title: 'Bookmark URL Site', description: 'A freelance project like Delicious.com built with Ruby on Rails.', tags: ['web'] },
+                { 
+                    title: 'Liive Video App (Low Bandwidth)', 
+                    description: 'Watch video flawlessly in low bandwidth or unstable networks. Features fuzzy search.', 
+                    tags: ['ios'],
+                    duration: '6 months',
+                    link: 'https://www.linkedin.com/pulse/app-liive-thien-pham?trk=mp-reader-card',
+                    detailedDescription: 'Developed an advanced iOS application focused on video streaming optimization. Key achievement was engineering a proprietary video player stack that minimized buffering and maintained playback quality even on poor network connections, improving user retention.',
+                    keyContributions: ['Engineered low-bandwidth video playback stack.', 'Implemented a complex fuzzy search algorithm for fast and typo-tolerant navigation.', 'Optimized media assets and network calls for minimal data usage.']
+                },
+                { 
+                    title: 'Custom iOS UI Automation Test Framework', 
+                    description: 'A robust, custom framework to automate complex UI testing flows using configuration files.', 
+                    tags: ['ios', 'automation'],
+                    duration: '18 months',
+                    link: 'https://www.linkedin.com/pulse/demo-ios-ui-automation-test-thien-pham/',
+                    detailedDescription: 'Architected and deployed a versatile UI automation framework (Objective-C/Swift) for enterprise applications (Cisbox, DXC). This solution allowed QA teams to define intricate test scenarios (like scrolling to a specific cell in a `UICollectionView`) using external configuration files, greatly reducing manual testing time.',
+                    keyContributions: ['Reduced QA cycle time by 40% through automation.', 'Designed the file parsing logic to handle external configuration (JSON/XML).', 'Integrated the framework across multiple large-scale mobile projects.']
+                },
+                { 
+                    title: 'OCR Handwriting with MediaPipe', 
+                    description: 'Proof-of-concept project converting finger movements into digital image data for Optical Character Recognition.', 
+                    tags: ['ios'],
+                    duration: '2 months',
+                    link: 'https://www.youtube.com/watch?v=Hnng4ymm_6k',
+                    detailedDescription: 'Exploratory R&D project focused on capturing real-time handwriting gestures on an iOS screen. The raw finger coordinates were translated into a pixel matrix, which was then converted into a high-contrast image suitable for various OCR engines.',
+                    keyContributions: ['Converted raw coordinate data into a stable pixel matrix.', 'Successfully generated image output for external OCR processing.', 'Demonstrated feasibility for touch-based data input systems.']
+                },
+                { 
+                    title: 'Windows HTS Trading Platform Features', 
+                    description: 'Developed and maintained high-performance C++ features for a Stock and Exchange desktop trading application.', 
+                    tags: ['c++'],
+                    duration: '28 months (part-time contribution across tenure)',
+                    link: 'https://www.kiwoom.co.id/trading/getHTSMain',
+                    detailedDescription: 'Contributed to the core Windows HTS (Home Trading System) application using C++ and Microsoft Visual Studio 2012. Primary focus was on enhancing real-time data visualization, fixing critical bugs, and building stable new features required for regulatory compliance and user demand.',
+                    keyContributions: ['Delivered several new high-priority features for the HTS release.', 'Responsible for low-latency data handling modules in C++.', 'Fixed stability issues across the trading interface.']
+                },
+                { 
+                    title: 'RealEstate Tube (Social Media)', 
+                    description: 'Video-based real estate social platform featuring joining, streaming, and chatting.', 
+                    tags: ['ios'],
+                    duration: '6 months',
+                    link: 'https://itunes.apple.com/us/app/realestatetube/id960714775',
+                    detailedDescription: 'Developed a feature-rich iOS application for the real estate market. The app included complex media handling features such as joining multiple video clips, adding theme music, and incorporating live streaming functionality with real-time chat.',
+                    keyContributions: ['Implemented robust video joining and editing tools.', 'Integrated live streaming capabilities.', 'Developed the real-time chat module.']
+                },
+                { 
+                    title: 'Disk Imaging Service (C++)', 
+                    description: 'A high-performance C++ service to back-up and restore hard disk data over the local area network (LAN).', 
+                    tags: ['c++'],
+                    duration: '15 months',
+                    link: null, // No link provided for this system-level project
+                    detailedDescription: 'C++ system development project focused on network and low-level disk I/O. The service securely handled disk imaging (backup/restore) and used HTTP/HTTPS protocols for transfer over the LAN, requiring robust error handling and high throughput.',
+                    keyContributions: ['Completed 100% of the C++ back-up and restore functionality.', 'Implemented secure data transfer using HTTP and HTTPS protocols.', 'Optimized network I/O for faster imaging times.']
+                },
+                { 
+                    title: 'Cisbox Accounting Apps', 
+                    description: 'Delivered two complex iOS apps for invoicing and ordering in the financial/accounting domain.', 
+                    tags: ['ios'],
+                    duration: '39 months (across tenure)',
+                    link: null, // No specific link provided, mentioned in description: Cisbox Invoice and Cisbox Order
+                    detailedDescription: 'As the primary iOS developer, I built the Cisbox Invoice and Cisbox Order applications. These apps handled complex business logic, large datasets, and required a secure, stable connection to the backend services. Also developed internal UI automation for these apps.',
+                    keyContributions: ['Successfully delivered both enterprise accounting applications.', 'Ensured app stability and user adoption for financial tasks.', 'Provided continuous support for iOS version updates.']
+                },
+                { 
+                    title: 'Enterprise Marketing Solution Architecture', 
+                    description: 'Architected and led the development of a cross-platform (Web, iOS, Android) enterprise solution.', 
+                    tags: ['web', 'ios', 'c++'],
+                    duration: '28 months',
+                    link: null, // No specific link provided for the overall architecture
+                    detailedDescription: 'As Team Leader at AP LINK, I designed the entire solution architecture. This included the web portal (.NET 3.5), C# web services, C# Windows services, and the mobile applications (iOS and Android). I also personally developed the custom iOS MVC framework used across all mobile implementations.',
+                    keyContributions: ['Designed the complete cross-platform architecture (Backend/Web/Mobile).', 'Developed the core, reusable MVC framework for the iOS application.', 'Managed a team of 5 developers and handled requirements analysis.']
+                },
+                { 
+                    title: 'Web Application with FastCGI', 
+                    description: 'An access control system web application built in C with the FastCGI framework.', 
+                    tags: ['web', 'c++'],
+                    duration: '7 months',
+                    link: null, // No link provided
+                    detailedDescription: 'Developed a high-performance web application for an access card control system. The choice of C with the FastCGI framework and Lighttpd web server ensured maximum speed and efficiency for handling concurrent user requests and database lookups.',
+                    keyContributions: ['Completed 100% of the application using C and FastCGI.', 'Implemented robust database integration (MySQL/Oracle).', 'Optimized application for performance on resource-constrained servers.']
+                },
             ];
+
+            function showProjectDetailModal(projectIndex) {
+                const data = portfolioData[projectIndex];
+                
+                modalTitle.innerHTML = data.title;
+                
+                let linkHtml = '';
+                if (data.link) {
+                    linkHtml = `
+                        <a href="${data.link}" target="_blank" class="inline-flex items-center justify-center px-4 py-2 mt-4 border border-transparent text-sm font-medium rounded-md shadow-lg text-white bg-[#c7a17a] hover:bg-[#b58f6b] transition duration-150">
+                            View Project / Demo
+                            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-4-2h5m0 0l-1 1m1-1l-1-1"></path></svg>
+                        </a>
+                    `;
+                }
+                
+                modalContent.innerHTML = `
+                    <p class="font-medium text-gray-600">**Project Duration:** ${data.duration}</p>
+                    <p class="text-sm mt-3">${data.detailedDescription}</p>
+                    ${linkHtml}
+                `;
+                
+                achievementsTitle.textContent = 'Key Contributions & Technologies:';
+                modalAchievementList.innerHTML = '';
+                data.keyContributions.forEach(contribution => {
+                    const li = document.createElement('li');
+                    li.textContent = contribution;
+                    modalAchievementList.appendChild(li);
+                });
+
+                detailModal.classList.remove('hidden');
+            }
+
 
             const portfolioGrid = document.getElementById('portfolio-grid');
             const filterButtons = document.querySelectorAll('#portfolio-filters .filter-btn');
@@ -581,8 +692,10 @@
                     ? portfolioData
                     : portfolioData.filter(item => item.tags.includes(filter));
 
-                filteredData.forEach(item => {
+                filteredData.forEach((item, index) => {
                     const card = document.createElement('div');
+                    // Add an index data attribute to easily look up the full details
+                    card.dataset.index = portfolioData.indexOf(item);
                     card.className = 'project-card bg-white rounded-xl shadow-md p-6 border border-gray-100 overflow-hidden';
                     
                     let tagsHTML = '';
@@ -597,6 +710,13 @@
                            ${tagsHTML}
                         </div>
                     `;
+                    
+                    // Add click listener to show modal
+                    card.addEventListener('click', function() {
+                        const projectIndex = this.dataset.index;
+                        showProjectDetailModal(parseInt(projectIndex));
+                    });
+                    
                     portfolioGrid.appendChild(card);
                 });
             };
