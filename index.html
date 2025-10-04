@@ -39,6 +39,16 @@
         #skillsChart {
             cursor: help;
         }
+        /* Custom Keyframes for Phone Shake */
+        @keyframes shake-phone {
+            0%, 100% { transform: rotate(0deg); }
+            10%, 30%, 50%, 70%, 90% { transform: rotate(-5deg); }
+            20%, 40%, 60%, 80% { transform: rotate(5deg); }
+        }
+
+        .animate-shake {
+            animation: shake-phone 0.8s ease-in-out;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -110,9 +120,12 @@
                         </div>
                         
                         <div class="flex items-center space-x-3">
-                            <!-- Icon for Phone -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c7a17a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                            <span class="text-gray-700">+84 906 411 561</span>
+                            <!-- Phone Number (UPDATED: Clickable and Animated) -->
+                            <a href="tel:+84906411561" class="flex items-center space-x-3 group hover:text-[#c7a17a] transition duration-300">
+                                <!-- Icon for Phone - Added ID for JS targeting -->
+                                <svg id="phone-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c7a17a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 group-hover:scale-105 transition duration-300"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                <span class="text-gray-700 group-hover:text-[#c7a17a] transition duration-300">+84 906 411 561</span>
+                            </a>
                         </div>
                         
                         <!-- Optionally add LinkedIn or other professional link -->
@@ -308,6 +321,28 @@
                     'Trained about TCP/IP and Testing method.'
                 ]},
             ].sort((a, b) => b.id - a.id); // Reverse order for correct chart display (oldest at bottom)
+            
+            // --- PHONE SHAKE ANIMATION (New Feature) ---
+            const phoneIcon = document.getElementById('phone-icon');
+            const phoneObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Start shaking when in view
+                        entry.target.classList.add('animate-shake');
+                    } else {
+                        // Stop shaking when out of view (optional, but clean)
+                        entry.target.classList.remove('animate-shake');
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.5 // Trigger when 50% of the element is visible
+            });
+
+            if (phoneIcon) {
+                phoneObserver.observe(phoneIcon);
+            }
 
             // Project/Demo Data for Portfolio Section - UPDATED WITH imageFile
             const portfolioData = [
