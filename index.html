@@ -309,12 +309,12 @@
                 ]},
             ].sort((a, b) => b.id - a.id); // Reverse order for correct chart display (oldest at bottom)
 
-            // Project/Demo Data for Portfolio Section
+            // Project/Demo Data for Portfolio Section - UPDATED WITH imageFile
             const portfolioData = [
                 // 0-8: Existing Projects
                 { index: 0, title: 'iOS UI Automation Test framework', description: 'Developed a robust framework for UI automation testing, significantly improving QA efficiency.', company: 'Cisbox/DXC', duration: '18 months', tags: ['iOS', 'Automation', 'Framework'], detail: { link: 'https://www.linkedin.com/pulse/demo-ios-ui-automation-test-thien-pham/', highlights: ['Scroll to the cell index of UICollectionView that has been defined in configuration file.'] } },
                 { index: 1, title: 'Liive App', description: 'Video streaming application focused on flawless playback even on low bandwidth/unstable networks.', company: 'EdgeWorks', duration: '6 months', tags: ['iOS', 'Streaming'], detail: { link: 'https://www.linkedin.com/pulse/app-liive-thien-pham?trk=mp-reader-card', highlights: ['Watch video flawlessly in low internet bandwidth or unstable.', 'Fuzzy search help user find the correct place with typo.'] } },
-                { index: 2, title: 'RealEstate Tube', description: 'Mobile video platform for real estate, featuring video joining, live streaming, and chatting.', company: 'EdgeWorks', duration: '6 months', tags: ['iOS', 'Streaming', 'Chat'], detail: { link: 'https://itunes.apple.com/us/app/realestatetube/id966062802?mt=8', highlights: ['Join multiple videos into 1 video with theme music.', 'Live streaming.', 'Chatting.'] } },
+                { index: 2, title: 'RealEstate Tube', description: 'Mobile video platform for real estate, featuring video joining, live streaming, and chatting.', company: 'EdgeWorks', duration: '6 months', tags: ['iOS', 'Streaming', 'Chat'], imageFile: 'RealEstate Tube.jpg', detail: { link: 'https://itunes.apple.com/us/app/realestatetube/id966062802?mt=8', highlights: ['Join multiple videos into 1 video with theme music.', 'Live streaming.', 'Chatting.'] } },
                 { index: 3, title: 'OCR Handwriting with MediaPipe',
                   description: 'A cutting-edge proof-of-concept using MediaPipe to capture and convert <b>real-time finger gestures (handwriting)</b> into an image for instant recognition of <b>text</b> via Optical Character Recognition (OCR).',
                   company: 'Personal/Demo', duration: '2 months', tags: ['iOS', 'MediaPipe', 'Demo'], detail: { link: 'https://www.youtube.com/watch?v=Hnng4ymm_6k', highlights: ['Converted finger position into pixels matrix.', 'Converted pixels matrix to image for OCR.'] } },
@@ -324,14 +324,13 @@
                 { index: 7, title: 'Bookmark URL Site', description: 'Freelance project using Ruby on Rails to build a social bookmarking and URL sharing website.', company: 'Freelancer', duration: '3 months', tags: ['Web', 'Ruby', 'Rails'], detail: { link: null, highlights: ['Created database and tested with RSpect/Cucumber.', 'Developed import function from delicious.com and full CRUD for bookmarks/tags.'] } },
                 { index: 8, title: 'Access Card System (Web/C)', description: 'System for card-based door entry, developing the web application side (authentication, user management) using C standard.', company: 'GATe Technology', duration: '7 months', tags: ['Web', 'C'], detail: { link: null, highlights: ['Developed the web application server-side using C standard.', 'Framework: FastCGI, Web server: Lighttpd.'] } },
                 
-                // 9-11: Other existing projects
-                { index: 9, title: 'Piano Party Game (in MindMate)', description: 'Developed the "Piano Party" game feature integrated within the MindMate application.', company: 'EdgeWorks', duration: '2 months', tags: ['iOS', 'Game'], detail: { link: null, highlights: ['Integrated game feature into existing iOS app.', 'Focus on smooth gameplay and UI/UX.'] } },
-                { index: 10, title: 'HTV Online App', description: 'Development of the official streaming and video-on-demand application for Ho Chi Minh City Television (HTV).', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Streaming'], detail: { link: null, highlights: ['Handled integration of VOD content and live streaming feeds.', 'Optimized for high traffic and entertainment user experience.'] } },
-                { index: 11, title: 'Entertainment TV Show Apps (Buoc Nhay Hoan Vu Nhi)', description: 'Created interactive mobile companion apps for various popular entertainment shows (The Voice, The Voice Kids, Buoc Nhay Hoan Vu Nhi, Sabotage).', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Entertainment'], detail: { link: null, highlights: ['Developed features for voting, news, and video clips related to the shows.'] } },
+                // 9-11: Other existing projects - UPDATED WITH imageFile
+                { index: 9, title: 'Piano Party Game (in MindMate)', description: 'Developed the "Piano Party" game feature integrated within the MindMate application.', company: 'EdgeWorks', duration: '2 months', tags: ['iOS', 'Game'], imageFile: 'Piano Party.jpg', detail: { link: null, highlights: ['Integrated game feature into existing iOS app.', 'Focus on smooth gameplay and UI/UX.'] } },
+                { index: 10, title: 'HTV Online App', description: 'Development of the official streaming and video-on-demand application for Ho Chi Minh City Television (HTV).', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Streaming'], imageFile: 'HTV Online.jpg', detail: { link: null, highlights: ['Handled integration of VOD content and live streaming feeds.', 'Optimized for high traffic and entertainment user experience.'] } },
+                { index: 11, title: 'Entertainment TV Show Apps (Buoc Nhay Hoan Vu Nhi)', description: 'Created interactive mobile companion apps for various popular entertainment shows (The Voice, The Voice Kids, Buoc Nhay Hoan Vu Nhi, Sabotage).', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Entertainment'], imageFile: 'Buoc Nhay Hoan Vu Nhi.jpg', detail: { link: null, highlights: ['Developed features for voting, news, and video clips related to the shows.'] } },
                 
-                // --- MODIFIED PROJECT (INDEX 12) ---
+                // 12: Modified Project
                 { index: 12, title: 'Netconference Management Tool (Web)', description: 'A management web tool for the Netconference application, specifically designed for <b>team management and cooperation</b>. It handles user accounts, collaboration settings, and configuration using <b>Python</b> and <b>Django</b>.', company: 'Sunrise Software Solution', duration: '8 months', tags: ['Web', 'Python', 'Django'], detail: { link: 'http://www.netconference.com/', highlights: ['Developed the full-stack web application using Python/Django.', 'Implemented user authentication and data management for the platform.', 'Designed and managed the PostgreSQL/MySQL database for user records and activity logs.'] } },
-                // --- END MODIFIED PROJECT ---
                 
                 { index: 13, title: 'Cocos2d-x Game Development', description: 'Developed two game applications using the Cocos2d-x framework, utilizing C++ and Lua for cross-platform logic.', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Game', 'C/C++'], detail: { link: null, highlights: ['Built 2 game apps using the Cocos2d-x engine.', 'Programmed game logic using C++ and Lua.'] } },
             ];
@@ -567,14 +566,31 @@
                 modal.classList.remove('hidden');
             }
 
+            // UPDATED: Function to show project detail modal with image support
             function showProjectDetailModal(index) {
                 const item = portfolioData.find(d => d.index === index);
                 if (!item) return;
 
                 modalTitle.textContent = item.title;
                 const linkHtml = item.detail.link
-                    ? `<a href="${item.detail.link}" target="_blank" class="text-blue-500 hover:underline">${item.detail.link}</a>`
+                    ? `<a href="${item.detail.link}" target="_blank" class="text-blue-500 hover:underline break-all">${item.detail.link}</a>`
                     : '<span class="text-gray-500">No public link available.</span>';
+
+                let imageHtml = '';
+                // Check if the item has a specified image file
+                if (item.imageFile) {
+                    imageHtml = `
+                        <div class="pt-4 border-t mt-4 border-gray-100">
+                            <h4 class="font-bold text-gray-800 mb-2">Visual Reference:</h4>
+                            <img src="${item.imageFile}" 
+                                 alt="${item.title} Screenshot" 
+                                 class="w-full h-auto rounded-lg shadow-xl mb-6 object-contain max-h-96 mx-auto border border-gray-200"
+                                 onerror="this.onerror=null; this.src='https://placehold.co/400x225/e0e0e0/555555?text=Image+Not+Found';"
+                            />
+                        </div>
+                    `;
+                }
+
 
                 modalContent.innerHTML = `
                     <p class="text-sm text-gray-500 mb-4">${item.company} | ${item.duration}</p>
@@ -585,6 +601,7 @@
                     </ul>
                     <p class="font-bold text-gray-800">Link/Demo:</p>
                     ${linkHtml}
+                    ${imageHtml}
                 `;
                 modal.classList.remove('hidden');
             }
