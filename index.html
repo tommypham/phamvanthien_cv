@@ -154,11 +154,12 @@
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Technical Skill Deep Dive</h2>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    This section illustrates my core technical competencies. The radar chart provides a visual "skill signature," highlighting my primary areas of expertise, while the tables offer a detailed breakdown of the languages, frameworks, and tools I've mastered throughout my career.
+                    This section illustrates my core technical competencies. The bar chart provides a visual, highly readable "skill signature" on a 1-10 scale, highlighting my primary areas of expertise, while the tables offer a detailed breakdown of the languages, frameworks, and tools I've mastered throughout my career.
                 </p>
             </div>
             <div class="grid lg:grid-cols-5 gap-8">
                 <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6 md:p-8 border border-gray-100 flex items-center justify-center">
+                    <!-- Adjusted container height for a better horizontal bar chart display -->
                     <div class="chart-container" style="height: 350px; max-height: 40vh;">
                         <canvas id="skillsChart"></canvas>
                     </div>
@@ -535,49 +536,57 @@
             });
 
 
-            // --- SKILLS DATA (Unchanged) ---
+            // --- SKILLS DATA (Updated to Horizontal Bar Chart) ---
             const skillsData = {
                 labels: ['iOS Development', 'C/C++ Systems', 'Testing & Automation', 'Databases', 'Web & Backend'],
                 datasets: [{
-                    label: 'Proficiency',
-                    data: [9, 8, 8.5, 7, 7.5],
-                    backgroundColor: 'rgba(199, 161, 122, 0.2)',
-                    borderColor: 'rgba(199, 161, 122, 1)',
-                    pointBackgroundColor: 'rgba(199, 161, 122, 1)',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'rgba(199, 161, 122, 1)',
-                    borderWidth: 2
+                    label: 'Proficiency Score (1-10)',
+                    // UPDATED SCORES: iOS, C/C++, and Automation are now 10/10
+                    data: [10, 10, 10, 7, 7.5], 
+                    backgroundColor: '#c7a17a', 
+                    borderRadius: 4,
                 }]
             };
 
             const skillsCtx = document.getElementById('skillsChart').getContext('2d');
             new Chart(skillsCtx, {
-                type: 'radar',
+                type: 'bar', // Changed from 'radar' to 'bar'
                 data: skillsData,
                 options: {
+                    indexAxis: 'y', // Set to 'y' for horizontal bars
                     maintainAspectRatio: false,
                     responsive: true,
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.parsed.x}/10`;
+                                }
+                            }
                         }
                     },
                     scales: {
-                        r: {
-                            angleLines: { color: '#e0e0e0' },
-                            grid: { color: '#e0e0e0' },
-                            pointLabels: { 
-                                font: { size: 12 },
-                                color: '#333'
+                        x: {
+                            beginAtZero: true,
+                            max: 10, // Set the max value to 10 for a clear scale
+                            grid: {
+                                display: true,
+                                color: '#e0e0e0'
                             },
                             ticks: {
-                                backdropColor: '#fdfdfc',
-                                color: '#777',
-                                stepSize: 2
-                            },
-                            min: 0,
-                            max: 10
+                                stepSize: 1,
+                                callback: function(value) {
+                                    return value + '/10';
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            }
                         }
                     }
                 }
