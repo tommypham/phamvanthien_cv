@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutrals -->
     <!-- Application Structure Plan: The SPA is designed as a non-linear interactive portfolio. A sticky navigation bar allows users to jump between thematic sections: an Overview with a career trajectory chart, a deep-dive into Technical Skills with a radar chart, and a filterable Project Portfolio. This structure was chosen to cater to different audiences (recruiters, technical managers) by allowing them to quickly access the information most relevant to them, transforming a static CV into an explorable experience. -->
-    <!-- Visualization & Content Choices: 1. Career Experience -> Goal: Show career progression -> Viz: Horizontal Bar Chart (Chart.js) -> Interaction: Hover tooltips for details. Justification: Quickly visualizes 17 years of experience and job tenure. 2. Technical Skills List -> Goal: Highlight core competencies -> Viz: Radar Chart (Chart.js) -> Interaction: Static view for immediate impact. Justification: Creates a "skill signature" that is more engaging than a list. 3. Project List -> Goal: Showcase tangible work -> Presentation: Filterable Card Grid (JS/Tailwind) -> Interaction: Clickable filters to sort by technology. Justification: A standard, highly-usable UI pattern for portfolios that allows user-driven exploration. -->
+    <!-- Visualization & Content Choices: 1. Career Experience -> Goal: Show career progression -> Viz: Horizontal Bar Chart (Chart.js) -> Interaction: CLICK event to open a modal detailing responsibilities and achievements. Justification: Prevents information overload by keeping details hidden until requested. 2. Technical Skills List -> Goal: Highlight core competencies -> Viz: Radar Chart (Chart.js) -> Interaction: Static view for immediate impact. Justification: Creates a "skill signature" that is more engaging than a list. 3. Project List -> Goal: Showcase tangible work -> Presentation: Filterable Card Grid (JS/Tailwind) -> Interaction: Clickable filters to sort by technology. Justification: A standard, highly-usable UI pattern for portfolios that allows user-driven exploration. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
@@ -48,6 +48,13 @@
         .project-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .modal {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -87,7 +94,7 @@
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Career Overview</h2>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    This section provides a high-level summary of my 17-year journey as a software engineer. It highlights key achievements and visually represents my career trajectory and tenure at various companies. You can hover over the chart bars to see more details about each role.
+                    This section provides a high-level summary of my 17-year journey as a software engineer. It highlights key achievements and visually represents my career trajectory and tenure at various companies. **Click on any bar** in the chart below to see detailed duties and accomplishments for that role.
                 </p>
             </div>
 
@@ -226,15 +233,50 @@
         </div>
     </footer>
 
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-[9999]">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 p-6 md:p-8 relative">
+            <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-900 transition duration-150">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h3 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2 border-gray-200"></h3>
+            <div id="modalContent" class="text-gray-700 space-y-3 max-h-96 overflow-y-auto pr-2">
+                <!-- Content will be injected here -->
+            </div>
+            <div id="modalAchievements" class="mt-4 pt-4 border-t border-gray-100">
+                <h4 class="font-semibold text-lg text-gray-800 mb-2">Key Achievements:</h4>
+                <ul id="modalAchievementList" class="list-disc pl-5 text-gray-600 space-y-1 text-sm">
+                    <!-- Achievements will be injected here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             
             const menuBtn = document.getElementById('menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
+            const detailModal = document.getElementById('detailModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            const modalAchievementList = document.getElementById('modalAchievementList');
+
             menuBtn.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
             });
             
+            closeModalBtn.addEventListener('click', () => {
+                detailModal.classList.add('hidden');
+            });
+
+            detailModal.addEventListener('click', (e) => {
+                if (e.target === detailModal) {
+                    detailModal.classList.add('hidden');
+                }
+            });
+
             const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
 
             const observer = new IntersectionObserver((entries) => {
@@ -253,74 +295,171 @@
             document.querySelectorAll('section').forEach(section => {
                 observer.observe(section);
             });
+            
+            const detailedExperience = [
+                {
+                    company: 'Daoukiwoom Innovation',
+                    duration: 'From 7/2023 to current',
+                    position: 'HTS Developer',
+                    duties: 'Using Microsoft Visual Studio 2012 to develop C++ to build up Stock and Exchange app for Windows.',
+                    achievements: [
+                        'Fix bug and build new features to release windows app.',
+                        'Link to download HTS app: https://www.kiwoom.co.id/trading/getHTSMain'
+                    ]
+                },
+                {
+                    company: 'Cisbox Ltd.',
+                    duration: 'From 3/2020 to 6/2023 (39 months)',
+                    position: 'iOS Developer',
+                    duties: 'Develop iOS app for Accounting. Develop framework of iOS UI automation test.',
+                    achievements: [
+                        'Delivery the app successfully.',
+                        'Links to download apps: Cisbox Invoice and Cisbox Order.',
+                        'Successfully developed and deployed internal iOS UI Automation Test Framework.'
+                    ]
+                },
+                {
+                    company: 'DXC Technology',
+                    duration: 'From 10/2017 to 3/2020 (30 months)',
+                    position: 'iOS Developer',
+                    duties: 'Develop iOS app to track user ‘s step via Apple watch. Develop iOS app to scan QR code. Develop framework of iOS UI automation test.',
+                    achievements: [
+                        'Delivery the app successfully and support customer when new iOS version release.',
+                        'Apply framework of iOS UI automation test to multiple iOS apps.'
+                    ]
+                },
+                {
+                    company: 'Dispatching Solutions, inc (DSi)',
+                    duration: 'From 3/2017 to 9/2017 (6 months)',
+                    position: 'iOS Developer',
+                    duties: 'Develop iOS app to send, read and write log bluetooth message.',
+                    achievements: [
+                        'Develop an app to keep track truck ‘s activity via bluetooth device: Atrack and Squarell.',
+                        'Upgrade bluetooth firmware over the air.'
+                    ]
+                },
+                {
+                    company: 'EdgeWorks',
+                    duration: 'From 12/2015 to 3/2017 (15 months)',
+                    position: 'iOS Developer',
+                    duties: 'Develop iOS app.',
+                    achievements: [
+                        'Develop and delivery successfully app RealEstateTube.',
+                        'Develop and delivery successfully Piano Party game in MindMate app.',
+                        'Develop and delivery successfully app Liive (Optimized for low bandwidth).'
+                    ]
+                },
+                {
+                    company: 'PINE TECH',
+                    duration: 'From 3/2015 to 12/2015 (9 months)',
+                    position: 'iOS Developer',
+                    duties: 'Develop apps: HTV Online, The Voice, The Voice kids, Buoc Nhay Hoan Vu Nhi, Sabotage.',
+                    achievements: [
+                        'Gained extensive experience developing entertainment apps.'
+                    ]
+                },
+                {
+                    company: 'AP LINK',
+                    duration: 'From 10/2012 to 2/2015 (28 months)',
+                    position: 'Team Leader',
+                    duties: 'Manage the team of 5 members. Analyze the requirement. Design architecture for multiple platform: web portal, web service, windows service, mobile application (Android, iOS). Research.',
+                    achievements: [
+                        'Solo developed the MVC framework for iOS from scratch (UITextField, UIButton, UITabBar, UINavigationController, custom Gallery, Core Data replacement via SQLite).',
+                        'Designed and implemented the whole architecture of a cross-platform Enterprise Marketing solution.',
+                        'Gained experience designing architecture in cross-platforms: .NET, Android, iOS.'
+                    ]
+                },
+                 {
+                    company: 'Sunrise Software Solution',
+                    duration: 'From 7/2011 to 10/2012 (15 months)',
+                    position: 'Developer',
+                    duties: 'Develop C++ project. Develop mobile app.',
+                    achievements: [
+                        'Completed the C++ project: back-up and restore hard disk on LAN (Protocol: HTTP and HTTPS).',
+                        'Developed an iPhone mobile map application (Google Maps-based).'
+                    ]
+                },
+                {
+                    company: 'CODIX',
+                    duration: 'From 7/2010 to 7/2011 (12 months)',
+                    position: 'Team Leader',
+                    duties: 'Manage the team of 3 members. Develop Interface to link other software modules in IMX system.',
+                    achievements: [
+                        'Completed 100% 3 interfaces with C++.',
+                        'Completed 100% 1 interface with ProC.',
+                        'Worked in Europe for 3 months.'
+                    ]
+                },
+                {
+                    company: 'GATe Technology',
+                    duration: 'From 12/2009 to 7/2010 (7 months)',
+                    position: 'Engineer',
+                    duties: 'Develop Web application.',
+                    achievements: [
+                        'Completed successfully 100% 1 web applications with C standard (Framework: FastCGI, Web server: Lighttpd).'
+                    ]
+                },
+                {
+                    company: 'B2BE Solution',
+                    duration: 'From 10/2008 to 12/2009 (14 months)',
+                    position: 'Engineer',
+                    duties: 'Develop Web application: with PHP, YUI, MySQL, AJAX. Develop EDI with C++.',
+                    achievements: [
+                        'Completed successfully 100% 2 web applications.',
+                        'Accomplished many EDI programs.'
+                    ]
+                },
+                {
+                    company: 'TMA Solution',
+                    duration: 'From 6/2008 to 8/2008 (2 months)',
+                    position: 'Engineer',
+                    duties: 'Testing telecommunication hardware (Nortel).',
+                    achievements: [
+                        'Trained in TCP/IP and Testing Methodologies.'
+                    ]
+                }
+            ];
 
             const experienceData = {
-                labels: [
-                    'TMA', 'B2BE', 'GATe', 'CODIX', 'Sunrise', 'AP LINK', 'PINE', 'EdgeWorks', 'DSi', 'DXC', 'Cisbox', 'Daoukiwoom'
-                ],
+                labels: detailedExperience.map(item => item.company),
                 datasets: [{
                     label: 'Months at Company',
-                    data: [2, 14, 7, 12, 15, 28, 9, 15, 6, 30, 39, 28],
+                    data: [28, 39, 30, 6, 15, 9, 28, 15, 12, 7, 14, 2],
                     backgroundColor: '#e3d5c6',
                     borderColor: '#c7a17a',
                     borderWidth: 2,
                     borderRadius: 4,
-                    borderSkipped: false,
-                    tooltips: {
-                        labels: [
-                            'Position: Engineer',
-                            'Position: Engineer',
-                            'Position: Engineer',
-                            'Position: Team Leader',
-                            'Position: Developer',
-                            'Position: Team Leader',
-                            'Position: iOS Developer',
-                            'Position: iOS Developer',
-                            'Position: iOS Developer',
-                            'Position: iOS Developer',
-                            'Position: iOS Developer',
-                            'Position: HTS Developer'
-                        ],
-                        details: [
-                            'Testing telecommunication hardware (Nortel).',
-                            'Developed Web applications with PHP/YUI and EDI with C++',
-                            'Developed Web application for access card system with C.',
-                            'Managed team of 3; developed system interfaces with C++.',
-                            'Developed C++ disk imaging project and iOS mobile map app.',
-                            'Managed team of 5; architected cross-platform marketing solution.',
-                            'Developed entertainment apps: HTV Online, The Voice.',
-                            'Developed apps: RealEstateTube, Liive, and Piano Party game.',
-                            'Developed iOS app for truck activity tracking via Bluetooth.',
-                            'Developed health/utility apps and iOS automation framework.',
-                            'Developed iOS accounting apps and advanced automation framework.',
-                            'Developing Windows HTS Stock & Exchange app with C++.'
-                        ]
-                    }
+                    borderSkipped: false
                 }]
             };
 
             const expCtx = document.getElementById('experienceChart').getContext('2d');
-            new Chart(expCtx, {
+            const experienceChart = new Chart(expCtx, {
                 type: 'bar',
                 data: experienceData,
                 options: {
                     indexAxis: 'y',
                     maintainAspectRatio: false,
                     responsive: true,
+                    onClick: (e) => {
+                        const points = experienceChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+                        if (points.length) {
+                            const firstPoint = points[0];
+                            const index = firstPoint.index;
+                            showDetailModal(index);
+                        }
+                    },
                     plugins: {
                         legend: {
                             display: false
                         },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
-                                    return `Duration: ${context.parsed.x} months`;
+                                title: function(context) {
+                                    return context[0].label;
                                 },
-                                afterLabel: function(context) {
-                                    const index = context.dataIndex;
-                                    const position = context.dataset.tooltips.labels[index];
-                                    const detail = context.dataset.tooltips.details[index];
-                                    return [position, '', detail];
+                                label: function(context) {
+                                    return `Duration: ${context.parsed.x} months (Click for details)`;
                                 }
                             },
                             backgroundColor: '#1a1a1a',
@@ -353,6 +492,27 @@
                 }
             });
 
+            function showDetailModal(index) {
+                const data = detailedExperience[index];
+                
+                modalTitle.innerHTML = `${data.position} <span class="text-base font-normal text-gray-500">at ${data.company}</span>`;
+                
+                modalContent.innerHTML = `
+                    <p class="font-medium text-gray-600">${data.duration}</p>
+                    <p class="text-sm">**Duties:** ${data.duties}</p>
+                `;
+                
+                modalAchievementList.innerHTML = '';
+                data.achievements.forEach(achieve => {
+                    const li = document.createElement('li');
+                    li.textContent = achieve;
+                    modalAchievementList.appendChild(li);
+                });
+
+                detailModal.classList.remove('hidden');
+            }
+
+
             const skillsData = {
                 labels: ['iOS Development', 'C/C++ Systems', 'Testing & Automation', 'Databases', 'Web & Backend'],
                 datasets: [{
@@ -384,7 +544,7 @@
                         r: {
                             angleLines: { color: '#e0e0e0' },
                             grid: { color: '#e0e0e0' },
-                            pointLabels: { 
+                            pointLabels: {
                                 font: { size: 12 },
                                 color: '#333'
                             },
