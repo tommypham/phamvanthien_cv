@@ -31,9 +31,35 @@
             color: #c7a17a;
             border-bottom-color: #c7a17a;
         }
+        
+        /* --- UPDATED MODAL STYLES FOR SMOOTH ANIMATION --- */
         .modal-overlay {
             background-color: rgba(0, 0, 0, 0.7);
+            /* Ensure the overlay itself has a smooth transition */
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0; /* Start hidden */
+            pointer-events: none; /* Ignore clicks when hidden */
         }
+        
+        .modal-overlay.active {
+            opacity: 1; /* Show */
+            pointer-events: auto; /* Enable clicks when visible */
+        }
+        
+        .modal-content-wrapper {
+            /* Initial state for pop-up effect */
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        .modal-overlay.active .modal-content-wrapper {
+            /* Final state when active */
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        /* ---------------------------------------------------- */
+        
         /* Custom style to make skill bars indicate interactivity */
         #skillsChart {
             cursor: help;
@@ -49,7 +75,7 @@
             animation: shake-phone 1.0s ease-in-out;
         }
 
-        /* --- NEW TOAST MESSAGE STYLES --- */
+        /* --- TOAST MESSAGE STYLES --- */
         .toast-message {
             position: fixed;
             bottom: 20px;
@@ -225,10 +251,10 @@
     </main>
     
     <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-overlay">
-        <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto transform transition-all scale-100">
+        <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto modal-content-wrapper">
             <div class="flex justify-between items-start border-b pb-3 mb-4">
                 <h3 id="modal-title" class="text-2xl font-bold text-gray-800"></h3>
-                <button onclick="document.getElementById('detail-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-700 text-3xl leading-none">&times;</button>
+                <button onclick="hideModal()" class="text-gray-400 hover:text-gray-700 text-3xl leading-none">&times;</button>
             </div>
             <div id="modal-content" class="text-gray-600 space-y-4">
                 </div>
@@ -238,18 +264,37 @@
     <div id="toast-container"></div>
 
     <script>
+        // Global utility functions to manage the modal with CSS transitions
+        const modal = document.getElementById('detail-modal');
+        function showModal() {
+            modal.classList.remove('hidden');
+            // Give browser time to recognize 'hidden' removal before adding 'active'
+            requestAnimationFrame(() => {
+                modal.classList.add('active');
+            });
+        }
+
+        function hideModal() {
+            modal.classList.remove('active');
+            // Hide completely after the transition duration (300ms)
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             
-            // --- NEW TOAST MESSAGE LOGIC ---
+            // --- TOAST MESSAGE LOGIC ---
             function showWelcomeToast() {
                 const container = document.getElementById('toast-container');
                 
+                // Avoid showing multiple toasts if DOMContentLoaded is triggered multiple times
+                if (document.getElementById('welcome-toast')) return;
+
                 // 1. Create the toast element
                 const toast = document.createElement('div');
                 toast.id = 'welcome-toast';
                 
-                // Tailwind classes for styling (shadow, rounded, padding, background, text)
-                // Using the primary color for the welcome message background
                 const classes = 'toast-message p-4 max-w-xs rounded-lg shadow-xl bg-[#c7a17a] text-white';
                 toast.className = classes;
 
@@ -262,14 +307,13 @@
                 // 3. Append to the container
                 container.appendChild(toast);
 
-                // 4. Show the toast (add 'show' class to trigger CSS transition)
-                // Use a small delay to ensure CSS transition works correctly after element creation
+                // 4. Show the toast
                 setTimeout(() => {
                     toast.classList.add('show');
                 }, 10);
                 
                 // 5. Hide the toast after 4 seconds (4000 milliseconds)
-                const DURATION = 6000;
+                const DURATION = 4000;
                 setTimeout(() => {
                     toast.classList.remove('show');
                     
@@ -282,12 +326,8 @@
             
             // Trigger the welcome message on page load
             showWelcomeToast();
-            // --- END OF NEW TOAST MESSAGE LOGIC ---
+            // --- END OF TOAST MESSAGE LOGIC ---
 
-
-            // --- CHART CONSISTENCY & LABELING ---
-            Chart.defaults.font.family = "'Inter', sans-serif";
-            Chart.defaults.font.weight = '500';
 
             // --- DATA STRUCTURES ---
 
@@ -354,29 +394,27 @@
                 ]},
             ].sort((a, b) => b.id - a.id); // Reverse order for correct chart display (oldest at bottom)
             
-            // --- PHONE SHAKE ANIMATION (New Feature) ---
+            // --- PHONE SHAKE ANIMATION ---
             const phoneIcon = document.getElementById('phone-icon');
             const phoneObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        // Start shaking when in view
                         entry.target.classList.add('animate-shake');
                     } else {
-                        // Stop shaking when out of view (optional, but clean)
                         entry.target.classList.remove('animate-shake');
                     }
                 });
             }, {
                 root: null,
                 rootMargin: '0px',
-                threshold: 0.5 // Trigger when 50% of the element is visible
+                threshold: 0.5
             });
 
             if (phoneIcon) {
                 phoneObserver.observe(phoneIcon);
             }
 
-            // Project/Demo Data for Portfolio Section - UPDATED WITH imageFile
+            // Project/Demo Data for Portfolio Section
             const portfolioData = [
                 // 0-8: Existing Projects
                 { index: 0, title: 'iOS UI Automation Test framework', description: 'Developed a robust framework for UI automation testing, significantly improving QA efficiency.', company: 'Cisbox/DXC', duration: '18 months', tags: ['iOS', 'Automation', 'Framework'], detail: { link: 'https://www.linkedin.com/pulse/demo-ios-ui-automation-test-thien-pham/', highlights: ['Scroll to the cell index of UICollectionView that has been defined in configuration file.'] } },
@@ -497,7 +535,6 @@
 
             // NEW CLICK HANDLER FOR Y-AXIS LABELS (Company Names)
             document.getElementById('experienceChart').addEventListener('click', function(event) {
-                // Get the coordinates of the click within the chart area
                 const rect = event.target.getBoundingClientRect();
                 const x = event.clientX - rect.left;
                 const y = event.clientY - rect.top;
@@ -506,22 +543,14 @@
                 const yAxis = experienceChart.scales.y;
                 const xAxis = experienceChart.scales.x;
                 
-                // Estimate the area of the Y-axis labels: from the start of the canvas to the start of the X-axis (before the bars begin)
                 if (x < xAxis.left && y > yAxis.top && y < yAxis.bottom) {
                     const ticks = yAxis.getTicks();
                     
-                    // Determine which label was clicked based on the Y coordinate
                     for (let i = 0; i < ticks.length; i++) {
-                        // Calculate the center Y position for the current tick label
                         const tickY = yAxis.getPixelForTick(i);
-                        
-                        // Assuming a label height of about 20-25 pixels
                         const labelHeight = 22;
                         
-                        // Check if the click Y is close to the tick's Y center
                         if (y >= tickY - labelHeight / 2 && y <= tickY + labelHeight / 2) {
-                            // Found the clicked label. Now find the correct index for the detailedExperience array.
-                            // Chart.js plots data in reverse order of the detailedExperience array.
                             const experienceIndex = detailedExperience.length - 1 - i;
                             
                             // Prevent double triggering if the click also registered on a bar
@@ -529,7 +558,7 @@
                             if (elements.length === 0) {
                                 showExperienceDetailModal(experienceIndex);
                             }
-                            break; // Stop after handling the click
+                            break;
                         }
                     }
                 }
@@ -566,25 +595,20 @@
                         tooltip: {
                              // Custom tooltip configuration
                              callbacks: {
-                                // Use the title callback to display the detailed skill description
                                 title: (tooltipItems) => {
                                     const index = tooltipItems[0].dataIndex;
-                                    const skillName = skillsData.labels[index].join(' '); // Reconstruct the skill name
+                                    const skillName = skillsData.labels[index].join(' ');
                                     return `${skillName}\n\nSummary:`;
                                 },
-                                // Use the label callback to display the score separately
                                 label: (context) => {
                                     const score = context.parsed.x;
                                     return `Score: ${score}/10`;
                                 },
-                                // Use the afterBody callback to inject the long description
                                 afterBody: (tooltipItems) => {
                                     const index = tooltipItems[0].dataIndex;
-                                    // Split the description into multiple lines for better display in the tooltip
                                     const description = skillDescriptions[index];
-                                    return description.match(/.{1,40}(\s|$)/g); // Wrap text every ~40 characters
+                                    return description.match(/.{1,40}(\s|$)/g);
                                 },
-                                // Remove the color box for the summary text
                                 labelColor: (context) => {
                                     return {
                                         borderColor: 'transparent',
@@ -598,9 +622,8 @@
             });
 
 
-            // --- MODAL LOGIC ---
+            // --- MODAL LOGIC (UPDATED TO USE showModal/hideModal) ---
 
-            const modal = document.getElementById('detail-modal');
             const modalTitle = document.getElementById('modal-title');
             const modalContent = document.getElementById('modal-content');
             
@@ -630,10 +653,10 @@
                         ${achievementsHtml}
                     </ul>
                 `;
-                modal.classList.remove('hidden');
+                showModal(); // Use the global function to show the modal with animation
             }
 
-            // UPDATED: Function to show project detail modal with image support
+            // Function to show project detail modal with image support
             function showProjectDetailModal(index) {
                 const item = portfolioData.find(d => d.index === index);
                 if (!item) return;
@@ -670,13 +693,13 @@
                     ${linkHtml}
                     ${imageHtml}
                 `;
-                modal.classList.remove('hidden');
+                showModal(); // Use the global function to show the modal with animation
             }
 
             // Close modal when clicking outside
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
-                    modal.classList.add('hidden');
+                    hideModal(); // Use the global function to hide the modal with animation
                 }
             });
 
@@ -688,7 +711,7 @@
             const observerOptions = {
                 root: null,
                 rootMargin: '0px',
-                threshold: 0.5 // Trigger when 50% of the section is visible
+                threshold: 0.5
             };
 
             const observer = new IntersectionObserver((entries) => {
@@ -706,7 +729,7 @@
             sections.forEach(section => observer.observe(section));
 
 
-            // --- PORTFOLIO FILTERING AND SORTING LOGIC (UPDATED) ---
+            // --- PORTFOLIO FILTERING AND SORTING LOGIC ---
 
             const portfolioGrid = document.getElementById('portfolio-grid');
             const filterButtons = document.querySelectorAll('.filter-btn');
