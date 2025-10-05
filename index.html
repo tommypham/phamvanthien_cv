@@ -802,20 +802,66 @@
             const navLinksHighlight = document.querySelectorAll('.nav-link');
             const sections = ['overview', 'skills', 'portfolio', 'contact'].map(id => document.getElementById(id));
 
-            const HEADER_HEIGHT_PX = header.offsetHeight + 10;
+            // Dynamically determine the header height for the root margin
+            const HEADER_HEIGHT_PX = header.offsetHeight;
             
             const observerOptions = {
                 root: null,
-                rootMargin: `-${HEADER_HEIGHT_PX}px 0px 0px 0px`,
-                threshold: [0.2, 0.75]
+                // Top margin equal to header height + 5px extra space. This defines the view area just below the header.
+                rootMargin: `-${HEADER_HEIGHT_PX + 5}px 0px 0px 0px`,
+                // Use a single, small threshold to ensure it triggers early on entry/exit
+                threshold: 0.1
             };
             
-            const observer = new IntersectionObserver((entries) => {
-                let activeId = null;
-                let bestEntry = null;
+            // Store the currently intersecting sections to handle multiple intersections (common during scrolling)
+            let intersectingSections = {};
 
+            const observer = new IntersectionObserver((entries) => {
+                
                 entries.forEach(entry => {
+                    const id = entry.target.id;
                     if (entry.isIntersecting) {
+                        // If it's intersecting, record its bounding rect top position
+                        // This is a more reliable metric than ratio for sections overlapping the top margin
+                        intersectingSections[id] = entry.boundingClientRect.top;
+                    } else {
+                        // If it's no longer intersecting, remove it from the list
+                        delete intersectingSections[id];
+                    }
+                });
+
+                let activeId = null;
+                let minTop = Infinity;
+                
+                // Find the section that is closest to the top (i.e., has the smallest positive boundingClientRect.top)
+                for (const [id, top] of Object.entries(intersectingSections)) {
+                    // Check if the section's top is visible below the header AND it's the closest one to the top (minTop)
+                    if (top >= HEADER_HEIGHT_PX && top < minTop) {
+                        minTop = top;
+                        activeId = id;
+                    } else if (!activeId && top > 0) {
+                        // Fallback: If no section is cleanly below the header, just grab the one with the smallest top value > 0
+                        // This handles the very top of the page when only the first section is visible.
+                        if (top < minTop) {
+                            minTop = top;
+                            activeId = id;
+                        }
+                    } else if (activeId === 'overview' && id === 'overview') {
+                        // Special case to keep overview active until the next section enters
+                        activeId = 'overview';
+                    }
+                }
+                
+                // A simpler, more robust way is to just find the element that is closest to the top,
+                // which is what the IntersectionObserver usually does with a top rootMargin.
+                // Let's revert to a cleaner ratio-based approach that relies entirely on the rootMargin isolating the active element.
+
+                let bestEntry = null;
+                // Find the section whose intersection ratio is highest (most visible) or whose top boundary is nearest the observer root.
+                entries.forEach(entry => {
+                    // Only consider sections that are actually intersecting the observation zone
+                    if (entry.isIntersecting) {
+                        // The section closest to the top margin will have the highest intersectionRatio
                         if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
                             bestEntry = entry;
                         }
