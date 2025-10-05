@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals: #c7a17a -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -49,11 +48,27 @@
         .animate-shake {
             animation: shake-phone 1.0s ease-in-out;
         }
+
+        /* --- NEW TOAST MESSAGE STYLES --- */
+        .toast-message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transform: translateY(100%);
+        }
+
+        .toast-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* --------------------------------- */
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- Sticky Navigation Header -->
     <header id="header" class="sticky top-0 z-50 bg-white shadow-md">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex justify-between items-center">
@@ -70,7 +85,6 @@
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-        <!-- OVERVIEW Section -->
         <section id="overview" class="pt-8 mb-16">
             <h2 class="text-3xl font-bold mb-6 text-gray-900">Professional Overview</h2>
             <div class="grid md:grid-cols-3 gap-8 mb-8">
@@ -86,9 +100,7 @@
                     </ul>
                 </div>
                 
-                <!-- START OF REVISED PERSONAL & CONTACT BLOCK -->
                 <div class="md:col-span-1 bg-gray-50 p-6 rounded-xl shadow-lg flex flex-col items-center">
-                    <!-- Avatar Image: Using the uploaded file my_avatar.jpg -->
                     <img src="my_avatar.jpg"
                          alt="Phạm Văn Thiện Avatar"
                          class="rounded-full w-24 h-24 mb-4 object-cover border-4 border-white shadow-md"
@@ -96,11 +108,9 @@
                     
                     <h3 class="font-semibold text-xl mb-6 text-gray-900">Education & Contact</h3>
                     
-                    <!-- EDUCATION BLOCK -->
                     <div class="w-full mb-6 p-4 bg-white rounded-lg border border-gray-100">
                         <div class="flex items-center space-x-2 text-gray-800 mb-2">
-                             <!-- Icon for Graduation Cap -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c7a17a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M12 22V15"/><path d="M15 4.1L22 8l-7 4-7-4z"/></svg>
+                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c7a17a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M12 22V15"/><path d="M15 4.1L22 8l-7 4-7-4z"/></svg>
                             <span class="font-bold text-sm uppercase tracking-wider">Education</span>
                         </div>
                         <p class="text-sm text-gray-700 leading-relaxed">
@@ -110,37 +120,29 @@
                         </p>
                     </div>
 
-                    <!-- CONTACT BLOCK -->
                     <div class="w-full space-y-3 text-sm">
                         
                         <div class="flex items-center space-x-3">
-                            <!-- Icon for Mail -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c7a17a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                             <a href="mailto:vanthien1986@gmail.com" class="text-gray-700 hover:text-[#c7a17a] hover:underline break-all">vanthien1986@gmail.com</a>
                         </div>
                         
                         <div class="flex items-center space-x-3">
-                            <!-- Phone Number (UPDATED: Clickable and Animated) -->
                             <a href="tel:+84906411561" class="flex items-center space-x-3 group hover:text-[#c7a17a] transition duration-300">
-                                <!-- Icon for Phone - Added ID for JS targeting -->
                                 <svg id="phone-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c7a17a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 group-hover:scale-105 transition duration-300"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                                 <span class="text-gray-700 group-hover:text-[#c7a17a] transition duration-300">+84 906 411 561</span>
                             </a>
                         </div>
                         
-                        <!-- Optionally add LinkedIn or other professional link -->
                         <div class="flex items-center space-x-3">
-                             <!-- Icon for User (Placeholder for Contact/Profile Link) -->
                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c7a17a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             <span class="text-gray-700">Vietnam, Ho Chi Minh City</span>
                         </div>
                     </div>
                 </div>
-                <!-- END OF REVISED PERSONAL & CONTACT BLOCK -->
-            </div>
+                </div>
             
             <h3 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Career Timeline</h3>
-            <!-- Updated instruction for clarity -->
             <p class="text-sm text-gray-600 mb-4">Click <b>any bar</b> or <b> the company name label</b> for details on duties and achievements for that role.</p>
             <div class="chart-container">
                 <canvas id="experienceChart"></canvas>
@@ -149,7 +151,6 @@
 
         <hr class="my-10 border-gray-200">
 
-        <!-- SKILLS Section -->
         <section id="skills" class="pt-8 mb-16">
             <h2 class="text-3xl font-bold mb-6 text-gray-900">Technical Skills</h2>
             <div class="grid md:grid-cols-2 gap-10">
@@ -189,46 +190,32 @@
 
         <hr class="my-10 border-gray-200">
 
-        <!-- PORTFOLIO Section -->
         <section id="portfolio" class="pt-8 mb-16">
             <h2 class="text-3xl font-bold mb-6 text-gray-900">Selected Project Portfolio</h2>
             
-            <!-- Filters -->
             <div class="flex flex-wrap gap-2 mb-6" id="portfolio-filters">
-                <!-- UPDATED COUNT: 9 existing + 5 new = 14 projects total -->
                 <button data-filter="all" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-[#c7a17a] text-white">All (14)</button>
-                <!-- UPDATED COUNT: (11 - 1) = 10 iOS projects (Project 12 changed from iOS to Web/Python) -->
                 <button data-filter="iOS" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">iOS (10)</button>
-                <!-- UNCHANGED COUNT: 3 C/C++ projects -->
                 <button data-filter="C/C++" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">C/C++ Systems (3)</button>
-                <!-- UPDATED COUNT: 3 existing Web + 1 newly tagged Web = 4 Web projects -->
                 <button data-filter="Web" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">Web (4)</button>
-                <!-- UNCHANGED COUNT: 1 Automation project -->
                 <button data-filter="Automation" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">Automation (1)</button>
             </div>
             
-            <!-- Portfolio Grid -->
             <div id="portfolio-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Cards will be injected here by JavaScript -->
-            </div>
+                </div>
         </section>
 
         <hr class="my-10 border-gray-200">
 
-        <!-- CONTACT Section -->
         <section id="contact" class="pt-8 mb-16 text-center">
             <h2 class="text-3xl font-bold mb-4 text-gray-900">Ready to Discuss?</h2>
             <p class="text-lg text-gray-600 mb-6">Contact me directly to explore how my 17 years of experience can contribute to your team's success.</p>
             <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <!-- Email Button -->
                 <a href="mailto:vanthien1986@gmail.com" class="inline-block px-8 py-3 text-lg font-semibold text-white bg-[#c7a17a] rounded-lg shadow-lg hover:bg-[#a68261] transition-colors">
                     Email Phạm Văn Thiện
                 </a>
-                <!-- Phone/Zalo Contact Button -->
                 <a href="tel:+84906411561" class="inline-flex items-center space-x-2 px-6 py-3 text-lg font-semibold text-[#c7a17a] border-2 border-[#c7a17a] bg-white rounded-lg shadow-lg hover:bg-gray-50 transition-colors">
-                    <!-- Phone Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    <!-- Chat/Zalo Icon (using a standard speech bubble) -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     <span>Call / Zalo (+84 906 411 561)</span>
                 </a>
@@ -237,7 +224,6 @@
 
     </main>
     
-    <!-- Modal for Detail View -->
     <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-overlay">
         <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto transform transition-all scale-100">
             <div class="flex justify-between items-start border-b pb-3 mb-4">
@@ -245,14 +231,60 @@
                 <button onclick="document.getElementById('detail-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-700 text-3xl leading-none">&times;</button>
             </div>
             <div id="modal-content" class="text-gray-600 space-y-4">
-                <!-- Content injected here -->
-            </div>
+                </div>
         </div>
     </div>
+    
+    <div id="toast-container"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             
+            // --- NEW TOAST MESSAGE LOGIC ---
+            function showWelcomeToast() {
+                const container = document.getElementById('toast-container');
+                
+                // 1. Create the toast element
+                const toast = document.createElement('div');
+                toast.id = 'welcome-toast';
+                
+                // Tailwind classes for styling (shadow, rounded, padding, background, text)
+                // Using the primary color for the welcome message background
+                const classes = 'toast-message p-4 max-w-xs rounded-lg shadow-xl bg-[#c7a17a] text-white';
+                toast.className = classes;
+
+                // 2. Set the content
+                toast.innerHTML = `
+                    <p class="font-bold mb-1">Welcome!</p>
+                    <p class="text-sm">Thank you for visiting. I hope you find what you're looking for!</p>
+                `;
+                
+                // 3. Append to the container
+                container.appendChild(toast);
+
+                // 4. Show the toast (add 'show' class to trigger CSS transition)
+                // Use a small delay to ensure CSS transition works correctly after element creation
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+                
+                // 5. Hide the toast after 4 seconds (4000 milliseconds)
+                const DURATION = 4000;
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    
+                    // 6. Remove the element from DOM after the transition completes (0.5s)
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 500);
+                }, DURATION);
+            }
+            
+            // Trigger the welcome message on page load
+            showWelcomeToast();
+            // --- END OF NEW TOAST MESSAGE LOGIC ---
+
+
             // --- CHART CONSISTENCY & LABELING ---
             Chart.defaults.font.family = "'Inter', sans-serif";
             Chart.defaults.font.weight = '500';
