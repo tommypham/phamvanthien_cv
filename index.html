@@ -253,8 +253,8 @@
             <h2 class="text-3xl font-bold mb-6 text-gray-900">Selected Project Portfolio</h2>
             
             <div class="flex flex-wrap gap-2 mb-6" id="portfolio-filters">
-                <button data-filter="all" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-[#c7a17a] text-white">All (14)</button>
-                <button data-filter="iOS" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">iOS (10)</button>
+                <button data-filter="all" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-[#c7a17a] text-white">All (15)</button>
+                <button data-filter="iOS" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">iOS (11)</button>
                 <button data-filter="C/C++" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">C/C++ Systems (3)</button>
                 <button data-filter="Web" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">Web (4)</button>
                 <button data-filter="Automation" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">Automation (1)</button>
@@ -329,7 +329,6 @@
                     const targetElement = document.querySelector(targetId);
                     
                     if (targetElement) {
-                        // Calculate header height dynamically for accurate offset
                         const headerHeight = header.offsetHeight;
                         
                         // Calculate the position to scroll to
@@ -429,7 +428,9 @@
             // --- END OF TOAST MESSAGE LOGIC ---
 
 
-            // --- DATA STRUCTURES (Unchanged) ---
+            // --- DATA STRUCTURES (MODIFIED portfolioData) ---
+
+            // Experience data for Career Timeline Chart
             const detailedExperience = [
                 { id: 0, company: 'Daoukiwoom Innovation', position: 'HTS developer', duration: '7/2023 to 7/2025 (24 months)', achievements: [
                     'Using Microsoft Visual Studio 2012 to develop C++ to build up Stock and Exchange app for Windows.',
@@ -509,6 +510,25 @@
                 { index: 11, title: 'Entertainment TV Show Apps (Buoc Nhay Hoan Vu Nhi)', description: 'Created interactive mobile companion apps for various popular entertainment shows (The Voice, The Voice Kids, Buoc Nhay Hoan Vu Nhi, Sabotage).', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Entertainment'], imageFile: 'Buoc Nhay Hoan Vu Nhi.jpg', detail: { link: null, highlights: ['Developed features for voting, news, and video clips related to the shows.'] } },
                 { index: 12, title: 'Netconference Management Tool (Web)', description: 'A management web tool for the Netconference application, specifically designed for <b>team management and cooperation</b>. It handles user accounts, collaboration settings, and configuration using <b>Python</b> and <b>Django</b>.', company: 'Sunrise Software Solution', duration: '8 months', tags: ['Web', 'Python', 'Django'], detail: { link: 'http://www.netconference.com/', highlights: ['Developed the full-stack web application using Python/Django.', 'Implemented user authentication and data management for the platform.', 'Designed and managed the PostgreSQL/MySQL database for user records and activity logs.'] } },
                 { index: 13, title: 'Cocos2d-x Game Development', description: 'Developed two game applications using the Cocos2d-x framework, utilizing C++ and Lua for cross-platform logic.', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Game', 'C/C++'], detail: { link: null, highlights: ['Built 2 game apps using the Cocos2d-x engine.', 'Programmed game logic using C++ and Lua.'] } },
+                
+                // NEW PROJECT ADDED HERE:
+                { index: 14, title: 'Car Tracking via Bluetooth 4.0',
+                  description: 'Developed an iOS application to track car activity (ignition, location) via Bluetooth Low Energy (BLE) connection to Atrack and Squarell devices.',
+                  company: 'Dispatching Solutions, inc (DSi)',
+                  duration: '6 months',
+                  tags: ['iOS', 'Bluetooth', 'IoT', 'Map'],
+                  imageFile: 'car_map.jpg',
+                  detail: {
+                      link: 'https://www.facebook.com/tommy.pham2/videos/10215115672399596/',
+                      highlights: [
+                          'Established reliable BLE connection and data exchange with Atrack and Squarell devices.',
+                          'Implemented ignition ON/OFF status detection.',
+                          'Tracked car location using mobile GPS and mapped data.',
+                          'Handled GPS signal loss and recovery, including demonstration of driving through Thu Thiem tunnel.'
+                      ]
+                  }
+                },
+                // END NEW PROJECT
             ];
 
             const skillsData = {
@@ -541,7 +561,7 @@
             // --- END DATA STRUCTURES ---
 
 
-            // --- CHART INITIALIZATION (Unchanged) ---
+            // --- CHART INITIALIZATION ---
             
             const experienceCtx = document.getElementById('experienceChart').getContext('2d');
             const experienceData = {
@@ -681,7 +701,7 @@
             });
 
 
-            // --- MODAL LOGIC (Unchanged) ---
+            // --- MODAL LOGIC ---
 
             const modalTitle = document.getElementById('modal-title');
             const modalContent = document.getElementById('modal-content');
@@ -757,7 +777,7 @@
             });
 
 
-            // --- PHONE SHAKE ANIMATION (Unchanged) ---
+            // --- PHONE SHAKE ANIMATION ---
             const phoneIcon = document.getElementById('phone-icon');
             const phoneObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
@@ -782,66 +802,20 @@
             const navLinksHighlight = document.querySelectorAll('.nav-link');
             const sections = ['overview', 'skills', 'portfolio', 'contact'].map(id => document.getElementById(id));
 
-            // Dynamically determine the header height for the root margin
-            const HEADER_HEIGHT_PX = header.offsetHeight;
+            const HEADER_HEIGHT_PX = header.offsetHeight + 10;
             
             const observerOptions = {
                 root: null,
-                // Top margin equal to header height + 5px extra space. This defines the view area just below the header.
-                rootMargin: `-${HEADER_HEIGHT_PX + 5}px 0px 0px 0px`,
-                // Use a single, small threshold to ensure it triggers early on entry/exit
-                threshold: 0.1
+                rootMargin: `-${HEADER_HEIGHT_PX}px 0px 0px 0px`,
+                threshold: [0.2, 0.75]
             };
             
-            // Store the currently intersecting sections to handle multiple intersections (common during scrolling)
-            let intersectingSections = {};
-
             const observer = new IntersectionObserver((entries) => {
-                
-                entries.forEach(entry => {
-                    const id = entry.target.id;
-                    if (entry.isIntersecting) {
-                        // If it's intersecting, record its bounding rect top position
-                        // This is a more reliable metric than ratio for sections overlapping the top margin
-                        intersectingSections[id] = entry.boundingClientRect.top;
-                    } else {
-                        // If it's no longer intersecting, remove it from the list
-                        delete intersectingSections[id];
-                    }
-                });
-
                 let activeId = null;
-                let minTop = Infinity;
-                
-                // Find the section that is closest to the top (i.e., has the smallest positive boundingClientRect.top)
-                for (const [id, top] of Object.entries(intersectingSections)) {
-                    // Check if the section's top is visible below the header AND it's the closest one to the top (minTop)
-                    if (top >= HEADER_HEIGHT_PX && top < minTop) {
-                        minTop = top;
-                        activeId = id;
-                    } else if (!activeId && top > 0) {
-                        // Fallback: If no section is cleanly below the header, just grab the one with the smallest top value > 0
-                        // This handles the very top of the page when only the first section is visible.
-                        if (top < minTop) {
-                            minTop = top;
-                            activeId = id;
-                        }
-                    } else if (activeId === 'overview' && id === 'overview') {
-                        // Special case to keep overview active until the next section enters
-                        activeId = 'overview';
-                    }
-                }
-                
-                // A simpler, more robust way is to just find the element that is closest to the top,
-                // which is what the IntersectionObserver usually does with a top rootMargin.
-                // Let's revert to a cleaner ratio-based approach that relies entirely on the rootMargin isolating the active element.
-
                 let bestEntry = null;
-                // Find the section whose intersection ratio is highest (most visible) or whose top boundary is nearest the observer root.
+
                 entries.forEach(entry => {
-                    // Only consider sections that are actually intersecting the observation zone
                     if (entry.isIntersecting) {
-                        // The section closest to the top margin will have the highest intersectionRatio
                         if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
                             bestEntry = entry;
                         }
@@ -852,7 +826,6 @@
                     activeId = bestEntry.target.id;
                 }
                 
-                // Apply the active class
                 if (activeId) {
                     navLinksHighlight.forEach(link => link.classList.remove('active'));
                     const activeLink = document.querySelector(`.nav-link[href="#${activeId}"]`);
@@ -865,7 +838,7 @@
             sections.forEach(section => observer.observe(section));
 
 
-            // --- PORTFOLIO FILTERING AND SORTING LOGIC (Unchanged) ---
+            // --- PORTFOLIO FILTERING AND SORTING LOGIC ---
 
             const portfolioGrid = document.getElementById('portfolio-grid');
             const filterButtons = document.querySelectorAll('.filter-btn');
