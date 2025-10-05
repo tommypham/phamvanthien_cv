@@ -329,6 +329,7 @@
                     const targetElement = document.querySelector(targetId);
                     
                     if (targetElement) {
+                        // Calculate header height dynamically for accurate offset
                         const headerHeight = header.offsetHeight;
                         
                         // Calculate the position to scroll to
@@ -367,21 +368,18 @@
                 };
 
                 // Add event listeners for hover (mouseenter and mouseleave)
-                // Use setTimeout to slightly delay collapse and prevent rapid toggling
                 let collapseTimeout;
                 
                 item.addEventListener('mouseenter', () => {
-                    clearTimeout(collapseTimeout); // Stop collapse if re-entered
+                    clearTimeout(collapseTimeout);
                     expandDetail();
                 });
                 
                 item.addEventListener('mouseleave', () => {
-                    collapseTimeout = setTimeout(collapseDetail, 100); // 100ms delay for smoother exit
+                    collapseTimeout = setTimeout(collapseDetail, 100);
                 });
                 
-                // Optional: Handle touch devices by expanding/collapsing on tap
                 item.addEventListener('click', (e) => {
-                    // Prevent link navigation if the item was a real link, but here it's fine
                     if (e.target.closest('.expertise-item') === item) {
                          if (detailContent.style.maxHeight === '0px' || detailContent.style.maxHeight === '') {
                             expandDetail();
@@ -398,50 +396,40 @@
             function showWelcomeToast() {
                 const container = document.getElementById('toast-container');
                 
-                // Avoid showing multiple toasts if DOMContentLoaded is triggered multiple times
                 if (document.getElementById('welcome-toast')) return;
 
-                // 1. Create the toast element
                 const toast = document.createElement('div');
                 toast.id = 'welcome-toast';
                 
                 const classes = 'toast-message p-4 max-w-xs rounded-lg shadow-xl bg-[#c7a17a] text-white';
                 toast.className = classes;
 
-                // 2. Set the content
                 toast.innerHTML = `
                     <p class="font-bold mb-1">Welcome!</p>
                     <p class="text-sm">Thank you for visiting. I hope you find what you're looking for!</p>
                 `;
                 
-                // 3. Append to the container
                 container.appendChild(toast);
 
-                // 4. Show the toast
                 setTimeout(() => {
                     toast.classList.add('show');
                 }, 10);
                 
-                // 5. Hide the toast after 4 seconds (4000 milliseconds)
                 const DURATION = 8000;
                 setTimeout(() => {
                     toast.classList.remove('show');
                     
-                    // 6. Remove the element from DOM after the transition completes (0.5s)
                     setTimeout(() => {
                         toast.remove();
                     }, 500);
                 }, DURATION);
             }
             
-            // Trigger the welcome message on page load
             showWelcomeToast();
             // --- END OF TOAST MESSAGE LOGIC ---
 
 
-            // --- DATA STRUCTURES ---
-
-            // Experience data for Career Timeline Chart
+            // --- DATA STRUCTURES (Unchanged) ---
             const detailedExperience = [
                 { id: 0, company: 'Daoukiwoom Innovation', position: 'HTS developer', duration: '7/2023 to 7/2025 (24 months)', achievements: [
                     'Using Microsoft Visual Studio 2012 to develop C++ to build up Stock and Exchange app for Windows.',
@@ -502,31 +490,9 @@
                     'Testing telecommunication hardware (Nortel).',
                     'Trained about TCP/IP and Testing method.'
                 ]},
-            ].sort((a, b) => b.id - a.id); // Reverse order for correct chart display (oldest at bottom)
+            ].sort((a, b) => b.id - a.id);
             
-            // --- PHONE SHAKE ANIMATION ---
-            const phoneIcon = document.getElementById('phone-icon');
-            const phoneObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate-shake');
-                    } else {
-                        entry.target.classList.remove('animate-shake');
-                    }
-                });
-            }, {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.5
-            });
-
-            if (phoneIcon) {
-                phoneObserver.observe(phoneIcon);
-            }
-
-            // Project/Demo Data for Portfolio Section
             const portfolioData = [
-                // 0-8: Existing Projects
                 { index: 0, title: 'iOS UI Automation Test framework', description: 'Developed a robust framework for UI automation testing, significantly improving QA efficiency.', company: 'Cisbox/DXC', duration: '18 months', tags: ['iOS', 'Automation', 'Framework'], detail: { link: 'https://www.linkedin.com/pulse/demo-ios-ui-automation-test-thien-pham/', highlights: ['Scroll to the cell index of UICollectionView that has been defined in configuration file.'] } },
                 { index: 1, title: 'Liive App', description: 'Video streaming application focused on flawless playback even on low bandwidth/unstable networks.', company: 'EdgeWorks', duration: '6 months', tags: ['iOS', 'Streaming'], detail: { link: 'https://www.linkedin.com/pulse/app-liive-thien-pham?trk=mp-reader-card', highlights: ['Watch video flawlessly in low internet bandwidth or unstable.', 'Fuzzy search help user find the correct place with typo.'] } },
                 { index: 2, title: 'RealEstate Tube', description: 'Mobile video platform for real estate, featuring video joining, live streaming, and chatting.', company: 'EdgeWorks', duration: '6 months', tags: ['iOS', 'Streaming', 'Chat'], imageFile: 'RealEstate Tube.jpg', detail: { link: 'https://itunes.apple.com/us/app/realestatetube/id966062802?mt=8', highlights: ['Join multiple videos into 1 video with theme music.', 'Live streaming.', 'Chatting.'] } },
@@ -538,57 +504,48 @@
                 { index: 6, title: 'Mobile Map (iPhone)', description: 'Search and navigation app built on Google Maps, prioritizing results based on user votes.', company: 'Sunrise Software Solution', duration: '6 months', tags: ['iOS', 'Objective-C', 'Map'], detail: { link: null, highlights: ['Built GUI and all map functions (navigation, zoom).', 'Implemented a location search and priority voting system.'] } },
                 { index: 7, title: 'Bookmark URL Site', description: 'Freelance project using Ruby on Rails to build a social bookmarking and URL sharing website.', company: 'Freelancer', duration: '3 months', tags: ['Web', 'Ruby', 'Rails'], detail: { link: null, highlights: ['Created database and tested with RSpect/Cucumber.', 'Developed import function from delicious.com and full CRUD for bookmarks/tags.'] } },
                 { index: 8, title: 'Access Card System (Web/C)', description: 'System for card-based door entry, developing the web application side (authentication, user management) using C standard.', company: 'GATe Technology', duration: '7 months', tags: ['Web', 'C'], detail: { link: null, highlights: ['Developed the web application server-side using C standard.', 'Framework: FastCGI, Web server: Lighttpd.'] } },
-                
-                // 9-11: Other existing projects - UPDATED WITH imageFile
                 { index: 9, title: 'Piano Party Game (in MindMate)', description: 'Developed the "Piano Party" game feature integrated within the MindMate application.', company: 'EdgeWorks', duration: '2 months', tags: ['iOS', 'Game'], imageFile: 'Piano Party.jpg', detail: { link: null, highlights: ['Integrated game feature into existing iOS app.', 'Focus on smooth gameplay and UI/UX.'] } },
                 { index: 10, title: 'HTV Online App', description: 'Development of the official streaming and video-on-demand application for Ho Chi Minh City Television (HTV).', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Streaming'], imageFile: 'HTV Online.jpg', detail: { link: null, highlights: ['Handled integration of VOD content and live streaming feeds.', 'Optimized for high traffic and entertainment user experience.'] } },
                 { index: 11, title: 'Entertainment TV Show Apps (Buoc Nhay Hoan Vu Nhi)', description: 'Created interactive mobile companion apps for various popular entertainment shows (The Voice, The Voice Kids, Buoc Nhay Hoan Vu Nhi, Sabotage).', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Entertainment'], imageFile: 'Buoc Nhay Hoan Vu Nhi.jpg', detail: { link: null, highlights: ['Developed features for voting, news, and video clips related to the shows.'] } },
-                
-                // 12: Modified Project
                 { index: 12, title: 'Netconference Management Tool (Web)', description: 'A management web tool for the Netconference application, specifically designed for <b>team management and cooperation</b>. It handles user accounts, collaboration settings, and configuration using <b>Python</b> and <b>Django</b>.', company: 'Sunrise Software Solution', duration: '8 months', tags: ['Web', 'Python', 'Django'], detail: { link: 'http://www.netconference.com/', highlights: ['Developed the full-stack web application using Python/Django.', 'Implemented user authentication and data management for the platform.', 'Designed and managed the PostgreSQL/MySQL database for user records and activity logs.'] } },
-                
                 { index: 13, title: 'Cocos2d-x Game Development', description: 'Developed two game applications using the Cocos2d-x framework, utilizing C++ and Lua for cross-platform logic.', company: 'PINE TECH', duration: '3 months', tags: ['iOS', 'Game', 'C/C++'], detail: { link: null, highlights: ['Built 2 game apps using the Cocos2d-x engine.', 'Programmed game logic using C++ and Lua.'] } },
             ];
 
-            // Skills data for Radar Chart
             const skillsData = {
-                // Modified labels for better fit on narrow screens:
                 labels: [
-                    ['iOS', 'Dev'], // Index 0
-                    ['C/C++', 'Systems'], // Index 1
-                    ['Web', 'Dev'], // Index 2
-                    [' Architecture', 'Design'], // Index 3
-                    ['Team', 'Leadership'], // Index 4
-                    ['Test', 'Automation'] // Index 5
+                    ['iOS', 'Dev'],
+                    ['C/C++', 'Systems'],
+                    ['Web', 'Dev'],
+                    [' Architecture', 'Design'],
+                    ['Team', 'Leadership'],
+                    ['Test', 'Automation']
                 ],
                 datasets: [{
                     label: 'Professional Focus (High=10)',
-                    data: [10, 10, 8.5, 9.0, 9.5, 10], // Scores based on depth of professional use
-                    backgroundColor: 'rgba(199, 161, 122, 0.7)', // #c7a17a with alpha
+                    data: [10, 10, 8.5, 9.0, 9.5, 10],
+                    backgroundColor: 'rgba(199, 161, 122, 0.7)',
                     borderColor: '#c7a17a',
                     borderWidth: 2,
                     pointBackgroundColor: '#c7a17a'
                 }]
             };
 
-            // New skill descriptions mapped to their index in the skillsData array
             const skillDescriptions = [
-                "10+ years focused on Objective-C and Swift. Built custom MVC frameworks, developed complex apps (Streaming, Enterprise), and integrated advanced features like MediaPipe and custom Bluetooth handling.", // iOS Dev
-                "Deep low-level knowledge in C/C++, delivering projects like HTS (Stock Trading) apps for Windows, Disk Imaging services (backup/restore), and EDI program interfaces for IMX systems. Experienced with C++ in Windows and Linux environments.", // C/C++ Systems
-                "Experienced in full-stack web development using PHP, Ruby on Rails, Java (Spring), .NET, and C standard (FastCGI) for portals, services, and web applications.", // Web Dev
-                "Led the architecture design for a large-scale cross-platform marketing solution (Web, Windows Service, Mobile). Also built a comprehensive MVC framework for iOS from scratch.", // Architecture Design
-                "Managed teams of 3-5 members, overseeing requirement analysis, architecture design, and project completion, including a 3-month on-site assignment in Europe.", // Team Leadership
-                "Developed and implemented robust iOS UI Automation Test frameworks across multiple organizations (Cisbox, DXC), significantly improving QA efficiency and release cycles." // Test Automation
+                "10+ years focused on Objective-C and Swift. Built custom MVC frameworks, developed complex apps (Streaming, Enterprise), and integrated advanced features like MediaPipe and custom Bluetooth handling.",
+                "Deep low-level knowledge in C/C++, delivering projects like HTS (Stock Trading) apps for Windows, Disk Imaging services (backup/restore), and EDI program interfaces for IMX systems. Experienced with C++ in Windows and Linux environments.",
+                "Experienced in full-stack web development using PHP, Ruby on Rails, Java (Spring), .NET, and C standard (FastCGI) for portals, services, and web applications.",
+                "Led the architecture design for a large-scale cross-platform marketing solution (Web, Windows Service, Mobile). Also built a comprehensive MVC framework for iOS from scratch.",
+                "Managed teams of 3-5 members, overseeing requirement analysis, architecture design, and project completion, including a 3-month on-site assignment in Europe.",
+                "Developed and implemented robust iOS UI Automation Test frameworks across multiple organizations (Cisbox, DXC), significantly improving QA efficiency and release cycles."
             ];
+            // --- END DATA STRUCTURES ---
 
 
-            // --- CHART INITIALIZATION ---
-
-            // Career Timeline Chart
+            // --- CHART INITIALIZATION (Unchanged) ---
+            
             const experienceCtx = document.getElementById('experienceChart').getContext('2d');
             const experienceData = {
                 labels: detailedExperience.map(item => {
-                    // MODIFIED: Return only the company name to remove the duration line
                     return item.company;
                 }),
                 datasets: [{
@@ -608,7 +565,6 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     indexAxis: 'y',
-                    // This onHover function makes the cursor a pointer when hovering over a clickable bar
                     onHover: (event, elements) => {
                         event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
                     },
@@ -620,7 +576,6 @@
                         y: {
                             title: { display: false },
                             ticks: {
-                                // Increased font size slightly and made the company name bold
                                 font: {
                                     size: 13,
                                     weight: 'bold'
@@ -632,24 +587,21 @@
                         legend: { display: false },
                         tooltip: { callbacks: { label: (context) => `Duration: ${context.parsed.x} months` } }
                     },
-                    // This onClick function handles the 'hyperlink' action by opening the detail modal
                     onClick: (event, elements) => {
                         if (elements.length > 0) {
                             const index = elements[0].index;
-                            const experienceIndex = detailedExperience.length - 1 - index; // Correct for reverse order
+                            const experienceIndex = detailedExperience.length - 1 - index;
                             showExperienceDetailModal(experienceIndex);
                         }
                     }
                 }
             });
 
-            // NEW CLICK HANDLER FOR Y-AXIS LABELS (Company Names)
             document.getElementById('experienceChart').addEventListener('click', function(event) {
                 const rect = event.target.getBoundingClientRect();
                 const x = event.clientX - rect.left;
                 const y = event.clientY - rect.top;
 
-                // Check if the click is within the Y-axis area (where labels are)
                 const yAxis = experienceChart.scales.y;
                 const xAxis = experienceChart.scales.x;
                 
@@ -663,7 +615,6 @@
                         if (y >= tickY - labelHeight / 2 && y <= tickY + labelHeight / 2) {
                             const experienceIndex = detailedExperience.length - 1 - i;
                             
-                            // Prevent double triggering if the click also registered on a bar
                             const elements = experienceChart.getElementsAtEventForMode(event, 'point', { intersect: true }, true);
                             if (elements.length === 0) {
                                 showExperienceDetailModal(experienceIndex);
@@ -674,7 +625,6 @@
                 }
             });
 
-            // Skills Horizontal Bar Chart - UPDATED TOOLTIP
             const skillsCtx = document.getElementById('skillsChart').getContext('2d');
             const skillsChart = new Chart(skillsCtx, {
                 type: 'bar',
@@ -703,7 +653,6 @@
                     plugins: {
                         legend: { display: false },
                         tooltip: {
-                             // Custom tooltip configuration
                              callbacks: {
                                 title: (tooltipItems) => {
                                     const index = tooltipItems[0].dataIndex;
@@ -732,14 +681,12 @@
             });
 
 
-            // --- MODAL LOGIC ---
+            // --- MODAL LOGIC (Unchanged) ---
 
             const modalTitle = document.getElementById('modal-title');
             const modalContent = document.getElementById('modal-content');
             
-            // Function to automatically convert URLs in text to clickable links
             function linkify(text) {
-                // Regex to find http(s):// or ftp:// URLs
                 const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
                 return text.replace(urlRegex, function(url) {
                     return '<a href="' + url + '" target="_blank" class="text-blue-500 hover:underline font-medium break-all">' + url + '</a>';
@@ -753,7 +700,6 @@
 
                 modalTitle.textContent = `${item.company} - ${item.position}`;
                 
-                // Use linkify when generating the achievement list items
                 const achievementsHtml = item.achievements.map(a => `<li>${linkify(a)}</li>`).join('');
 
                 modalContent.innerHTML = `
@@ -763,10 +709,9 @@
                         ${achievementsHtml}
                     </ul>
                 `;
-                showModal(); // Use the global function to show the modal with animation
+                showModal();
             }
 
-            // Function to show project detail modal with image support
             function showProjectDetailModal(index) {
                 const item = portfolioData.find(d => d.index === index);
                 if (!item) return;
@@ -777,7 +722,6 @@
                     : '<span class="text-gray-500">No public link available.</span>';
 
                 let imageHtml = '';
-                // Check if the item has a specified image file
                 if (item.imageFile) {
                     imageHtml = `
                         <div class="pt-4 border-t mt-4 border-gray-100">
@@ -803,51 +747,125 @@
                     ${linkHtml}
                     ${imageHtml}
                 `;
-                showModal(); // Use the global function to show the modal with animation
+                showModal();
             }
 
-            // Close modal when clicking outside
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
-                    hideModal(); // Use the global function to hide the modal with animation
+                    hideModal();
                 }
             });
 
-            // --- NAVIGATION & SCROLL LOGIC (for active highlighting) ---
+
+            // --- PHONE SHAKE ANIMATION (Unchanged) ---
+            const phoneIcon = document.getElementById('phone-icon');
+            const phoneObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-shake');
+                    } else {
+                        entry.target.classList.remove('animate-shake');
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.5
+            });
+
+            if (phoneIcon) {
+                phoneObserver.observe(phoneIcon);
+            }
+            
+            // --- REFINED NAVIGATION & SCROLL LOGIC FIX ---
 
             const navLinksHighlight = document.querySelectorAll('.nav-link');
             const sections = ['overview', 'skills', 'portfolio', 'contact'].map(id => document.getElementById(id));
-            // const header = document.getElementById('header'); // Already defined
 
-            // Recalculate HEADER_HEIGHT_PX dynamically
-            const HEADER_HEIGHT_PX = header.offsetHeight + 10;
-
-            // UPDATED: Use a rootMargin that accounts for the header height.
-            // When the section's *top* edge is this distance from the viewport top, it triggers.
+            // Dynamically determine the header height for the root margin
+            const HEADER_HEIGHT_PX = header.offsetHeight;
+            
             const observerOptions = {
                 root: null,
-                rootMargin: `-${HEADER_HEIGHT_PX}px 0px 0px 0px`,
-                // FIX: Use multiple thresholds for better detection when scrolling in either direction.
-                threshold: [0.2, 0.75]
+                // Top margin equal to header height + 5px extra space. This defines the view area just below the header.
+                rootMargin: `-${HEADER_HEIGHT_PX + 5}px 0px 0px 0px`,
+                // Use a single, small threshold to ensure it triggers early on entry/exit
+                threshold: 0.1
             };
+            
+            // Store the currently intersecting sections to handle multiple intersections (common during scrolling)
+            let intersectingSections = {};
 
             const observer = new IntersectionObserver((entries) => {
+                
                 entries.forEach(entry => {
-                    // Check if the section is intersecting (visible in the main view area)
+                    const id = entry.target.id;
                     if (entry.isIntersecting) {
-                        navLinksHighlight.forEach(link => link.classList.remove('active'));
-                        const activeLink = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
-                        if (activeLink) {
-                            activeLink.classList.add('active');
+                        // If it's intersecting, record its bounding rect top position
+                        // This is a more reliable metric than ratio for sections overlapping the top margin
+                        intersectingSections[id] = entry.boundingClientRect.top;
+                    } else {
+                        // If it's no longer intersecting, remove it from the list
+                        delete intersectingSections[id];
+                    }
+                });
+
+                let activeId = null;
+                let minTop = Infinity;
+                
+                // Find the section that is closest to the top (i.e., has the smallest positive boundingClientRect.top)
+                for (const [id, top] of Object.entries(intersectingSections)) {
+                    // Check if the section's top is visible below the header AND it's the closest one to the top (minTop)
+                    if (top >= HEADER_HEIGHT_PX && top < minTop) {
+                        minTop = top;
+                        activeId = id;
+                    } else if (!activeId && top > 0) {
+                        // Fallback: If no section is cleanly below the header, just grab the one with the smallest top value > 0
+                        // This handles the very top of the page when only the first section is visible.
+                        if (top < minTop) {
+                            minTop = top;
+                            activeId = id;
+                        }
+                    } else if (activeId === 'overview' && id === 'overview') {
+                        // Special case to keep overview active until the next section enters
+                        activeId = 'overview';
+                    }
+                }
+                
+                // A simpler, more robust way is to just find the element that is closest to the top,
+                // which is what the IntersectionObserver usually does with a top rootMargin.
+                // Let's revert to a cleaner ratio-based approach that relies entirely on the rootMargin isolating the active element.
+
+                let bestEntry = null;
+                // Find the section whose intersection ratio is highest (most visible) or whose top boundary is nearest the observer root.
+                entries.forEach(entry => {
+                    // Only consider sections that are actually intersecting the observation zone
+                    if (entry.isIntersecting) {
+                        // The section closest to the top margin will have the highest intersectionRatio
+                        if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
+                            bestEntry = entry;
                         }
                     }
                 });
+
+                if (bestEntry) {
+                    activeId = bestEntry.target.id;
+                }
+                
+                // Apply the active class
+                if (activeId) {
+                    navLinksHighlight.forEach(link => link.classList.remove('active'));
+                    const activeLink = document.querySelector(`.nav-link[href="#${activeId}"]`);
+                    if (activeLink) {
+                        activeLink.classList.add('active');
+                    }
+                }
             }, observerOptions);
 
             sections.forEach(section => observer.observe(section));
 
 
-            // --- PORTFOLIO FILTERING AND SORTING LOGIC ---
+            // --- PORTFOLIO FILTERING AND SORTING LOGIC (Unchanged) ---
 
             const portfolioGrid = document.getElementById('portfolio-grid');
             const filterButtons = document.querySelectorAll('.filter-btn');
@@ -860,34 +878,29 @@
                     ? portfolioData
                     : portfolioData.filter(item => item.tags.includes(filter));
 
-                // Custom Sorting Logic: Move the special project to the front
                 const specialProjectIndex = filteredData.findIndex(item => item.title === SPECIAL_PROJECT_TITLE);
                 
                 if (specialProjectIndex > -1) {
                     const specialProject = filteredData.splice(specialProjectIndex, 1)[0];
-                    filteredData.unshift(specialProject); // Place it at the start
+                    filteredData.unshift(specialProject);
                 }
 
 
                 filteredData.forEach((item, index) => {
                     const card = document.createElement('div');
                     
-                    // Logic to highlight the specific project card
                     let cardClasses = 'flex flex-col rounded-lg shadow-sm p-6 cursor-pointer hover:shadow-lg transition-shadow duration-300';
 
                     if (item.title === SPECIAL_PROJECT_TITLE) {
-                        // Highlighted style: light amber background, border-2 border-[#c7a17a], subtle scaling transform
                         cardClasses += ' bg-amber-100 border-2 border-[#c7a17a] shadow-md transform scale-[1.02]';
                     } else {
-                        // Default style
                         cardClasses += ' bg-white border border-gray-200';
                     }
                     
                     card.className = cardClasses;
                     
-                    card.dataset.index = item.index; // Use original index for modal lookup
+                    card.dataset.index = item.index;
                     
-                    // Create Tags HTML
                     const tagsHTML = item.tags.map(tag =>
                         `<span class="inline-block bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full font-medium mt-1 mr-1">${tag}</span>`
                     ).join('');
@@ -900,7 +913,6 @@
                         </div>
                     `;
                     
-                    // Add click listener to show modal
                     card.addEventListener('click', function() {
                         const projectIndex = parseInt(this.dataset.index);
                         showProjectDetailModal(projectIndex);
