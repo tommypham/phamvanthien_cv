@@ -118,13 +118,46 @@
                     <p class="text-lg text-gray-700 mb-6">
                         A highly experienced and versatile <b>Senior Software Engineer</b> with over <b>17 years</b> of professional experience, specializing in <b>iOS Development</b>, <b>C/C++ Systems</b>, and <b>Cross-Platform Architecture</b>. Proven history of delivering complex mobile applications, enterprise solutions, and leading development teams.
                     </p>
-                    <ul class="space-y-3 text-gray-600 list-disc pl-5">
-                        <li><b>Core Mobile Expertise:</b> 10+ years focused on iOS development, mastering Objective-C and modern Swift practices.</li>
-                        <li><b>Systems Integration:</b> Deep knowledge of low-level programming (C/C++) used for HTS apps, back-up solutions, and EDI programs.</li>
-                        <li><b>Architectural Leadership:</b> Proven ability to manage teams and design robust, cross-platform architecture for web services, Windows services, and mobile applications (AP LINK).</li>
-                        <li><b>Automation Advocate:</b> Developed and applied iOS UI Automation Test frameworks across multiple organizations (DXC, Cisbox).</li>
+                    
+                    <ul id="expertise-list" class="space-y-4 text-gray-600 pl-0 list-none">
+                        
+                        <li class="expertise-item list-disc pl-2 relative border-l-4 border-[#c7a17a] p-2 hover:bg-gray-50 rounded transition-all duration-300">
+                            <div class="summary-line font-bold text-gray-800 cursor-pointer text-base hover:text-[#a68261] transition-colors duration-300">
+                                Core Mobile Expertise: 10+ Years in iOS Development
+                            </div>
+                            <p class="detail-content text-gray-700 mt-1 ml-0 text-sm max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                                Mastery of <b>Objective-C</b> and modern <b>Swift</b> practices, with over a decade focused on delivering complex mobile solutions and modernizing existing architectures.
+                            </p>
+                        </li>
+                        
+                        <li class="expertise-item list-disc pl-2 relative border-l-4 border-[#c7a17a] p-2 hover:bg-gray-50 rounded transition-all duration-300">
+                            <div class="summary-line font-bold text-gray-800 cursor-pointer text-base hover:text-[#a68261] transition-colors duration-300">
+                                Systems Integration: Deep C/C++ Programming
+                            </div>
+                            <p class="detail-content text-gray-700 mt-1 ml-0 text-sm max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                                Expert knowledge of low-level programming (<b>C/C++</b>) used for critical projects like <b>HTS (Stock Trading) apps</b> for Windows, hard disk <b>back-up solutions</b>, and <b>EDI (Electronic Data Interchange)</b> programs.
+                            </p>
+                        </li>
+                        
+                        <li class="expertise-item list-disc pl-2 relative border-l-4 border-[#c7a17a] p-2 hover:bg-gray-50 rounded transition-all duration-300">
+                            <div class="summary-line font-bold text-gray-800 cursor-pointer text-base hover:text-[#a68261] transition-colors duration-300">
+                                Architectural Leadership: Cross-Platform Design
+                            </div>
+                            <p class="detail-content text-gray-700 mt-1 ml-0 text-sm max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                                Proven ability to <b>manage teams</b> (of up to 5 members) and design robust, scalable, <b>cross-platform architecture</b> for diverse components: web services, Windows services, and mobile applications (e.g., the <b>AP LINK</b> platform).
+                            </p>
+                        </li>
+                        
+                        <li class="expertise-item list-disc pl-2 relative border-l-4 border-[#c7a17a] p-2 hover:bg-gray-50 rounded transition-all duration-300">
+                            <div class="summary-line font-bold text-gray-800 cursor-pointer text-base hover:text-[#a68261] transition-colors duration-300">
+                                Automation Advocate: iOS UI Testing
+                            </div>
+                            <p class="detail-content text-gray-700 mt-1 ml-0 text-sm max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                                Developed and successfully implemented proprietary <b>iOS UI Automation Test frameworks</b> across large organizations (<b>DXC, Cisbox</b>), significantly boosting QA efficiency and ensuring reliable releases.
+                            </p>
+                        </li>
                     </ul>
-                </div>
+                    </div>
                 
                 <div class="md:col-span-1 bg-gray-50 p-6 rounded-xl shadow-lg flex flex-col items-center">
                     <img src="my_avatar.jpg"
@@ -283,6 +316,52 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            
+            // --- HOVER TO EXPAND LOGIC FOR OVERVIEW POINTS ---
+            const expertiseItems = document.querySelectorAll('.expertise-item');
+
+            expertiseItems.forEach(item => {
+                const detailContent = item.querySelector('.detail-content');
+                
+                // Function to expand
+                const expandDetail = () => {
+                    // Set max-height to the scroll height for smooth CSS transition
+                    detailContent.style.maxHeight = detailContent.scrollHeight + 'px';
+                };
+                
+                // Function to collapse
+                const collapseDetail = () => {
+                    // Set height to 0 for collapse transition
+                    detailContent.style.maxHeight = '0';
+                };
+
+                // Add event listeners for hover (mouseenter and mouseleave)
+                // Use setTimeout to slightly delay collapse and prevent rapid toggling
+                let collapseTimeout;
+                
+                item.addEventListener('mouseenter', () => {
+                    clearTimeout(collapseTimeout); // Stop collapse if re-entered
+                    expandDetail();
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    collapseTimeout = setTimeout(collapseDetail, 100); // 100ms delay for smoother exit
+                });
+                
+                // Optional: Handle touch devices by expanding/collapsing on tap
+                item.addEventListener('click', (e) => {
+                    // Prevent link navigation if the item was a real link, but here it's fine
+                    if (e.target.closest('.expertise-item') === item) {
+                         if (detailContent.style.maxHeight === '0px' || detailContent.style.maxHeight === '') {
+                            expandDetail();
+                         } else {
+                            collapseDetail();
+                         }
+                    }
+                });
+            });
+            // --- END OF HOVER LOGIC ---
+            
             
             // --- TOAST MESSAGE LOGIC ---
             function showWelcomeToast() {
