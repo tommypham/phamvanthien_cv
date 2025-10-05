@@ -817,18 +817,23 @@
 
             const navLinksHighlight = document.querySelectorAll('.nav-link');
             const sections = ['overview', 'skills', 'portfolio', 'contact'].map(id => document.getElementById(id));
+            // const header = document.getElementById('header'); // Already defined
 
-            // Set a large root margin equal to the offset used in the JavaScript scroll logic
-            // to ensure the navigation link becomes 'active' as soon as the section scrolls into view.
+            // Recalculate HEADER_HEIGHT_PX dynamically
             const HEADER_HEIGHT_PX = header.offsetHeight + 10;
+
+            // UPDATED: Use a rootMargin that accounts for the header height.
+            // When the section's *top* edge is this distance from the viewport top, it triggers.
             const observerOptions = {
                 root: null,
                 rootMargin: `-${HEADER_HEIGHT_PX}px 0px 0px 0px`,
-                threshold: 0
+                // FIX: Use multiple thresholds for better detection when scrolling in either direction.
+                threshold: [0.2, 0.75]
             };
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
+                    // Check if the section is intersecting (visible in the main view area)
                     if (entry.isIntersecting) {
                         navLinksHighlight.forEach(link => link.classList.remove('active'));
                         const activeLink = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
