@@ -94,7 +94,7 @@
     </style>
 </head>
 <body class="antialiased">
-
+    
     <header id="header" class="sticky top-0 z-50 bg-white shadow-md">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex justify-between items-center">
@@ -955,6 +955,250 @@
             });
 
             renderPortfolio('all');
+        });
+    </script>
+    <div id="floating-video-container" style="
+        position: fixed;
+        bottom: 120px;
+        right: 20px;
+        width: 220px;
+        border-radius: 12px;
+        overflow: visible;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        z-index: 9999;
+        background: #000;
+        border: 1px solid rgba(199, 161, 122, 0.3);
+        user-select: none;
+    ">
+        <!-- Inner clip so video stays rounded -->
+        <div style="border-radius: 12px; overflow: hidden; position: relative;">
+
+            <!-- Close button -->
+            <button onclick="document.getElementById('floating-video-container').style.display='none'" style="
+                position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.5);
+                color: white; border: none; border-radius: 50%; width: 24px; height: 24px;
+                font-size: 16px; z-index: 106; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            ">×</button>
+
+            <!-- Drag handle (top bar) -->
+            <div id="video-drag-handle" title="Drag to move" style="
+                position: absolute; top: 0; left: 0; right: 0; height: 28px;
+                cursor: grab; z-index: 105;
+                background: linear-gradient(rgba(0,0,0,0.45), transparent);
+                display: flex; align-items: center; padding-left: 8px;
+            ">
+                <span style="color: rgba(255,255,255,0.5); font-size: 11px; pointer-events: none;">⠿ drag</span>
+            </div>
+
+            <!-- Hover play/pause overlay -->
+            <div id="video-controls" style="
+                position: absolute; inset: 0;
+                background: rgba(0,0,0,0.2);
+                display: flex; flex-direction: column; justify-content: center; align-items: center;
+                z-index: 101; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+            " onmouseover="this.style.opacity='1'; this.style.pointerEvents='auto';" onmouseout="this.style.opacity='0'; this.style.pointerEvents='none';">
+                <button onclick="togglePlay()" style="
+                    background: rgba(199, 161, 122, 0.5); border: none; border-radius: 50%;
+                    width: 50px; height: 50px; cursor: pointer; color: white; font-size: 20px;
+                    pointer-events: auto;
+                ">
+                    <span id="play-icon-hover" style="display:none;">▶</span>
+                    <span id="pause-icon-hover">⏸</span>
+                </button>
+            </div>
+
+            <!-- Always-visible bottom control bar -->
+            <div style="
+                position: absolute; bottom: 0; left: 0; right: 0;
+                background: linear-gradient(transparent, rgba(0,0,0,0.7));
+                padding: 8px 10px 6px; display: flex; align-items: center; gap: 8px;
+                z-index: 103;
+            ">
+                <button id="play-pause-btn" onclick="togglePlay()" title="Play / Pause" style="
+                    background: rgba(199, 161, 122, 0.5); border: none; border-radius: 50%;
+                    width: 30px; height: 30px; cursor: pointer; color: white; font-size: 13px;
+                    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+                ">
+                    <span id="play-icon" style="display:none;">▶</span>
+                    <span id="pause-icon">⏸</span>
+                </button>
+                <button id="unmute-btn-small" onclick="toggleMute()" title="Sound" style="
+                    background: rgba(199, 161, 122, 0.5); color: white; border: none; border-radius: 4px;
+                    padding: 3px 8px; font-size: 10px; font-weight: bold; cursor: pointer; flex-shrink: 0;
+                ">🔊 SOUND</button>
+            </div>
+
+            <video id="intro-video" width="100%" height="auto" autoplay loop playsinline
+                   style="display: block; width: 100%;">
+                <source src="intro-video.mp4" type="video/mp4">
+            </video>
+        </div><!-- end inner clip -->
+
+        <!-- Resize handles (outside the clip div so they're visible) -->
+        <!-- Top-left -->
+        <div class="vid-resize-handle" data-dir="nw" title="Resize" style="
+            position: absolute; top: -6px; left: -6px;
+            width: 16px; height: 16px; cursor: nw-resize; z-index: 110;
+        "></div>
+        <!-- Top-right -->
+        <div class="vid-resize-handle" data-dir="ne" title="Resize" style="
+            position: absolute; top: -6px; right: -6px;
+            width: 16px; height: 16px; cursor: ne-resize; z-index: 110;
+        "></div>
+        <!-- Bottom-left -->
+        <div class="vid-resize-handle" data-dir="sw" title="Resize" style="
+            position: absolute; bottom: -6px; left: -6px;
+            width: 16px; height: 16px; cursor: sw-resize; z-index: 110;
+        "></div>
+        <!-- Bottom-right -->
+        <div class="vid-resize-handle" data-dir="se" title="Resize" style="
+            position: absolute; bottom: -6px; right: -6px;
+            width: 16px; height: 16px; cursor: se-resize; z-index: 110;
+        "></div>
+    </div>
+
+    <script>
+        const video = document.getElementById('intro-video');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        const playIconHover = document.getElementById('play-icon-hover');
+        const pauseIconHover = document.getElementById('pause-icon-hover');
+        const unmuteBtn = document.getElementById('unmute-btn-small');
+        const vidContainer = document.getElementById('floating-video-container');
+
+        /* ── Play / Pause ── */
+        function togglePlay() {
+            if (video.paused) {
+                video.play();
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'inline';
+                playIconHover.style.display = 'none';
+                pauseIconHover.style.display = 'inline';
+            } else {
+                video.pause();
+                playIcon.style.display = 'inline';
+                pauseIcon.style.display = 'none';
+                playIconHover.style.display = 'inline';
+                pauseIconHover.style.display = 'none';
+            }
+        }
+
+        /* ── Mute / Unmute ── */
+        function toggleMute() {
+            if (video.muted) {
+                video.muted = false;
+                unmuteBtn.innerText = "🔊 SOUND";
+                unmuteBtn.style.background = "rgba(199, 161, 122, 0.5)";
+            } else {
+                video.muted = true;
+                unmuteBtn.innerText = "🔇 SOUND";
+                unmuteBtn.style.background = "rgba(255,255,255,0.15)";
+            }
+        }
+
+        /* ── Drag to move ── */
+        (function () {
+            const handle = document.getElementById('video-drag-handle');
+            let dragging = false, startX, startY, startRight, startBottom;
+
+            handle.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+                dragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                // Work in right/bottom coords since container is fixed bottom-right
+                startRight  = parseInt(vidContainer.style.right)  || 20;
+                startBottom = parseInt(vidContainer.style.bottom) || 120;
+                handle.style.cursor = 'grabbing';
+            });
+
+            document.addEventListener('mousemove', function (e) {
+                if (!dragging) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                let newRight  = startRight  - dx;
+                let newBottom = startBottom - dy;
+                // Clamp so it stays on screen
+                newRight  = Math.max(0, Math.min(window.innerWidth  - vidContainer.offsetWidth,  newRight));
+                newBottom = Math.max(0, Math.min(window.innerHeight - vidContainer.offsetHeight, newBottom));
+                vidContainer.style.right  = newRight  + 'px';
+                vidContainer.style.bottom = newBottom + 'px';
+            });
+
+            document.addEventListener('mouseup', function () {
+                if (dragging) { dragging = false; handle.style.cursor = 'grab'; }
+            });
+        })();
+
+        /* ── Resize handles ── */
+        (function () {
+            const MIN_W = 140, MAX_W = 600;
+
+            document.querySelectorAll('.vid-resize-handle').forEach(function (handle) {
+                handle.addEventListener('mousedown', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const dir      = handle.dataset.dir;          // nw | ne | sw | se
+                    const startX   = e.clientX;
+                    const startW   = vidContainer.offsetWidth;
+                    const startRight  = parseInt(vidContainer.style.right)  || 20;
+                    const startBottom = parseInt(vidContainer.style.bottom) || 20;
+
+                    function onMove(ev) {
+                        const dx = ev.clientX - startX;
+                        let newW = startW;
+
+                        if (dir === 'nw' || dir === 'sw') {
+                            // Dragging left edge → grow left means right increases
+                            newW = startW - dx;
+                        } else {
+                            // Dragging right edge → grow right means right decreases
+                            newW = startW + dx;
+                        }
+
+                        newW = Math.max(MIN_W, Math.min(MAX_W, newW));
+
+                        // Adjust right anchor so the opposite edge stays fixed
+                        if (dir === 'nw' || dir === 'sw') {
+                            vidContainer.style.right = (startRight + (startW - newW)) + 'px';
+                        } else {
+                            vidContainer.style.right = (startRight - (newW - startW)) + 'px';
+                        }
+
+                        vidContainer.style.width = newW + 'px';
+                    }
+
+                    function onUp() {
+                        document.removeEventListener('mousemove', onMove);
+                        document.removeEventListener('mouseup', onUp);
+                    }
+
+                    document.addEventListener('mousemove', onMove);
+                    document.addEventListener('mouseup', onUp);
+                });
+            });
+        })();
+
+        // Browsers block autoplay with sound — start muted (required), then
+        // unmute automatically on the first user interaction with the page.
+        video.muted = true;
+        unmuteBtn.innerText = "🔇 SOUND";
+        unmuteBtn.style.background = "rgba(255,255,255,0.15)";
+        video.play();
+
+        function unmuteOnInteraction() {
+            video.muted = false;
+            unmuteBtn.innerText = "🔊 SOUND";
+            unmuteBtn.style.background = "rgba(199, 161, 122, 0.5)";
+            // Remove all listeners once triggered
+            ['click', 'keydown', 'touchstart', 'scroll'].forEach(function(evt) {
+                document.removeEventListener(evt, unmuteOnInteraction);
+            });
+        }
+
+        ['click', 'keydown', 'touchstart', 'scroll'].forEach(function(evt) {
+            document.addEventListener(evt, unmuteOnInteraction, { once: true, passive: true });
         });
     </script>
 </body>
