@@ -91,6 +91,35 @@
             transform: translateY(0);
         }
         /* --------------------------------- */
+
+        /* Cross-platform play/pause CSS icons */
+        .vid-icon { display: inline-flex; align-items: center; justify-content: center; }
+        .vid-icon.hidden { display: none; }
+
+        /* Play triangle — pure CSS border trick */
+        .vid-play-shape {
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 5px 0 5px 9px;
+            border-color: transparent transparent transparent white;
+            margin-left: 2px; /* optical center */
+        }
+        .vid-play-shape.lg {
+            border-width: 8px 0 8px 14px;
+            margin-left: 3px;
+        }
+
+        /* Pause — two white rectangles */
+        .vid-pause-shape {
+            display: flex; gap: 3px; align-items: center;
+        }
+        .vid-pause-shape span {
+            display: block; width: 3px; height: 10px;
+            background: white; border-radius: 1px;
+        }
+        .vid-pause-shape.lg span {
+            width: 4px; height: 16px;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -1000,10 +1029,10 @@
                 <button onclick="togglePlay()" style="
                     background: rgba(199, 161, 122, 0.5); border: none; border-radius: 50%;
                     width: 50px; height: 50px; cursor: pointer; color: white; font-size: 20px;
-                    pointer-events: auto;
+                    pointer-events: auto; display: flex; align-items: center; justify-content: center;
                 ">
-                    <span id="play-icon-hover" style="display:none;">▶</span>
-                    <span id="pause-icon-hover">⏸</span>
+                    <span id="play-icon-hover" class="vid-icon hidden"><div class="vid-play-shape lg"></div></span>
+                    <span id="pause-icon-hover" class="vid-icon"><div class="vid-pause-shape lg"><span></span><span></span></div></span>
                 </button>
             </div>
 
@@ -1019,8 +1048,8 @@
                     width: 30px; height: 30px; cursor: pointer; color: white; font-size: 13px;
                     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
                 ">
-                    <span id="play-icon" style="display:none;">▶</span>
-                    <span id="pause-icon">⏸</span>
+                    <span id="play-icon" class="vid-icon hidden"><div class="vid-play-shape"></div></span>
+                    <span id="pause-icon" class="vid-icon"><div class="vid-pause-shape"><span></span><span></span></div></span>
                 </button>
                 <button id="unmute-btn-small" onclick="toggleMute()" title="Sound" style="
                     background: rgba(199, 161, 122, 0.5); color: white; border: none; border-radius: 4px;
@@ -1070,16 +1099,16 @@
         function togglePlay() {
             if (video.paused) {
                 video.play();
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'inline';
-                playIconHover.style.display = 'none';
-                pauseIconHover.style.display = 'inline';
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+                playIconHover.classList.add('hidden');
+                pauseIconHover.classList.remove('hidden');
             } else {
                 video.pause();
-                playIcon.style.display = 'inline';
-                pauseIcon.style.display = 'none';
-                playIconHover.style.display = 'inline';
-                pauseIconHover.style.display = 'none';
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+                playIconHover.classList.remove('hidden');
+                pauseIconHover.classList.add('hidden');
             }
         }
 
