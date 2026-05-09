@@ -1003,7 +1003,7 @@
         <div style="border-radius: 12px; overflow: hidden; position: relative;">
 
             <!-- Close button -->
-            <button onclick="document.getElementById('floating-video-container').style.display='none'" style="
+            <button onclick="closeVideo()" style="
                 position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.5);
                 color: white; border: none; border-radius: 50%; width: 24px; height: 24px;
                 font-size: 16px; z-index: 106; cursor: pointer; display: flex; align-items: center; justify-content: center;
@@ -1094,6 +1094,13 @@
         const pauseIconHover = document.getElementById('pause-icon-hover');
         const unmuteBtn = document.getElementById('unmute-btn-small');
         const vidContainer = document.getElementById('floating-video-container');
+
+        /* ── Close ── */
+        function closeVideo() {
+            video.pause();
+            video.muted = true;
+            vidContainer.style.display = 'none';
+        }
 
         /* ── Play / Pause ── */
         function togglePlay() {
