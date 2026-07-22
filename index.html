@@ -282,10 +282,11 @@
             <h2 class="text-3xl font-bold mb-6 text-gray-900">Selected Project Portfolio</h2>
             
             <div class="flex flex-wrap gap-2 mb-6" id="portfolio-filters">
-                <button data-filter="all" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-[#c7a17a] text-white">All (15)</button>
+                <button data-filter="all" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-[#c7a17a] text-white">All (16)</button>
                 <button data-filter="iOS" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">iOS (11)</button>
                 <button data-filter="C/C++" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">C/C++ Systems (3)</button>
-                <button data-filter="Web" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">Web (4)</button>
+                <button data-filter="Web" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">Web (5)</button>
+                <button data-filter="AI" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">AI (1)</button>
                 <button data-filter="Automation" class="filter-btn px-4 py-2 text-sm rounded-full transition-colors bg-white text-gray-700 border border-gray-300 hover:border-[#c7a17a]">Automation (1)</button>
             </div>
             
@@ -558,6 +559,23 @@
                   }
                 },
                 // END NEW PROJECT
+                { index: 15,
+                  title: 'Tin Tức Chứng Khoán 24h – AI',
+                  description: '<b>AI & Big Data Powered Stock Intelligence Platform.</b> Fully automated end-to-end pipeline: collecting financial data, analysing market signals, writing SEO-optimised articles, and publishing — all without human intervention. Real-Time Financial Big Data Analytics with AI-driven Vietnamese Equity Intelligence.',
+                  company: 'Personal Project',
+                  duration: '12 months',
+                  tags: ['Web', 'AI', 'Python', 'Node.js'],
+                  detail: {
+                      link: 'https://tintucchungkhoan24h.com/',
+                      highlights: [
+                          'Automate 100% of the whole process: collecting data, analysing data, writing articles and SEO.',
+                          'Used Machine Learning to build up the system of categories for stock codes.',
+                          'Used Gemini to auto-write articles daily.',
+                          'Used Cron to automate the process of crawling news data and analysing data.',
+                          'Tech stack: PostgreSQL (SupaBase), Python, Node.js, HTML, JavaScript, Cron, Machine Learning, Ollama with model Qwen2.5:7b-instruct.'
+                      ]
+                  }
+                },
             ];
 
             const skillsData = {
