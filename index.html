@@ -935,7 +935,11 @@
 
             const portfolioGrid = document.getElementById('portfolio-grid');
             const filterButtons = document.querySelectorAll('.filter-btn');
-            const SPECIAL_PROJECT_TITLE = 'Tin Tức Chứng Khoán 24h – AI';
+            // Projects listed here are highlighted and pinned to the top in order
+            const PINNED_PROJECTS = [
+                'Tin Tức Chứng Khoán 24h – AI',
+                'OCR Handwriting with MediaPipe'
+            ];
 
             const renderPortfolio = (filter) => {
                 portfolioGrid.innerHTML = '';
@@ -944,20 +948,19 @@
                     ? portfolioData
                     : portfolioData.filter(item => item.tags.includes(filter));
 
-                const specialProjectIndex = filteredData.findIndex(item => item.title === SPECIAL_PROJECT_TITLE);
-                
-                if (specialProjectIndex > -1) {
-                    const specialProject = filteredData.splice(specialProjectIndex, 1)[0];
-                    filteredData.unshift(specialProject);
-                }
-
+                // Extract pinned projects in defined order, then prepend them
+                const pinned = PINNED_PROJECTS
+                    .map(title => filteredData.find(item => item.title === title))
+                    .filter(Boolean);
+                const rest = filteredData.filter(item => !PINNED_PROJECTS.includes(item.title));
+                filteredData = [...pinned, ...rest];
 
                 filteredData.forEach((item, index) => {
                     const card = document.createElement('div');
                     
                     let cardClasses = 'flex flex-col rounded-lg shadow-sm p-6 cursor-pointer hover:shadow-lg transition-shadow duration-300';
 
-                    if (item.title === SPECIAL_PROJECT_TITLE) {
+                    if (PINNED_PROJECTS.includes(item.title)) {
                         cardClasses += ' bg-amber-100 border-2 border-[#c7a17a] shadow-md transform scale-[1.02]';
                     } else {
                         cardClasses += ' bg-white border border-gray-200';
